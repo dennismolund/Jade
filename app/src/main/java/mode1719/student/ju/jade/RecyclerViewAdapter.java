@@ -19,7 +19,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
-
     private ArrayList<String> mimageName =  new ArrayList<>();
     private ArrayList<String> mimages =  new ArrayList<>();
     private Context mContext;
