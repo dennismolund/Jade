@@ -19,13 +19,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
+    private ArrayList<Event> mEvent = new ArrayList<>();
     private ArrayList<String> mimageName =  new ArrayList<>();
     private ArrayList<String> mimages =  new ArrayList<>();
     private Context mContext;
 
-    public RecyclerViewAdapter(ArrayList<String> imageName, ArrayList<String> images, Context mContext) {
-        this.mimageName = imageName;
-        this.mimages = images;
+    public RecyclerViewAdapter(ArrayList<Event> event, Context mContext) {
+        this.mEvent = event;
         this.mContext = mContext;
     }
 
@@ -43,10 +43,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         Glide.with(mContext)
                 .asBitmap()
-                .load(mimages.get(i))
+                .load(mEvent.get(i).getImageUrl())
                 .into(viewHolder.image);
 
-        viewHolder.imageName.setText(mimageName.get(i));
+        viewHolder.imageName.setText(mEvent.get(i).getTitle());
 
 
 
@@ -55,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
 
 
-                Toast.makeText(mContext, mimageName.get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, mEvent.get(i).getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -64,7 +64,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
 
-        return mimageName.size();
+        return mEvent.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -48,7 +48,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         mEvents.add(new Event("Mahahual", "https://i.redd.it/0h2gm1ix6p501.jpg"));
         mEvents.add(new Event("Frozen Lake", "https://i.redd.it/k98uzl68eh501.jpg"));
         //mEvents.add(new Event("White Sands Dessert", "https://i.redd.it/glin0nwndo501.jpg"));
-
+        addToDatabase();
 
         initRecyclerView();
     }

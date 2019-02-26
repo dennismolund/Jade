@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "602251996002",
+    "firebase_url": "https://jade-8a2a9.firebaseio.com",
+    "project_id": "jade-8a2a9",
+    "storage_bucket": "jade-8a2a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602251996002:android:f1bc66c1e7db53a2",
+        "android_client_info": {
+          "package_name": "mode1719.student.ju.jade"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "602251996002-d38uagrnp80m69mfd620kgvcrpoeuudl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZlz3bwxhEGkOPfyHir2K0DwpiIScEpiQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
