@@ -1,5 +1,8 @@
 package mode1719.student.ju.jade;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Date;
 
 public class Event {
@@ -8,6 +11,7 @@ public class Event {
     private String description;
     private String time;
     private String imageUrl;
+    private String creator;
 
     public Event(){}
 
@@ -16,12 +20,13 @@ public class Event {
         this.imageUrl = imageUrl;
     }
 
-    public Event(Date date, String title, String description, String time, String imageUrl){
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator){
         this.date = date;
         this.title = title;
         this.description = description;
         this.time = time;
         this.imageUrl = imageUrl;
+        this.creator = creator;
     }
 
     public Date getDate() { return date; }
@@ -44,6 +49,16 @@ public class Event {
 
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
+    public String getCreator() { return creator; }
+
+    public void setCreator(String creator) { this.creator = creator; }
+
+    public void addToDatabase(Event event){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.push().setValue(event);
+    }
+
     @Override
     public String toString(){ return "Title: " + title + "\n" + "Time: " + time + "\n" + "Description: " + description;}
+
 }

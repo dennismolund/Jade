@@ -3,7 +3,6 @@ package mode1719.student.ju.jade;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private ArrayList<Event> mEvent = new ArrayList<>();
-    private ArrayList<String> mimageName =  new ArrayList<>();
-    private ArrayList<String> mimages =  new ArrayList<>();
     private Context mContext;
 
     public RecyclerViewAdapter(ArrayList<Event> event, Context mContext) {
