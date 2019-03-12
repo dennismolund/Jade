@@ -22,7 +22,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#000"
-        android:text="Title"/>
+        android:text="title"/>
 
     <EditText
         android:id="@+id/eventTime"
@@ -32,7 +32,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#000"
-        android:text="Time"/>
+        android:text="time"/>
 
     <EditText
         android:id="@+id/eventDescription"
@@ -43,6 +43,8 @@
         android:textSize="20sp"
         android:textColor="#000"
         android:text="Description"/>
+
+
 
     <Button
         android:id="@+id/doneButton"

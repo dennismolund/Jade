@@ -30,8 +30,9 @@ public class RecyclerViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event_list);
         Log.d(TAG, "onCreate: ");
-        initEventList();
         getMainIntent();
+        initEventList();
+
 
     }
 

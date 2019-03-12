@@ -15,12 +15,6 @@ import org.w3c.dom.Text;
 
 public class ShowEvent extends AppCompatActivity {
 
-    ImageView eventImage = findViewById(R.id.eventImage);
-    TextView eventTitle = findViewById(R.id.eventTitle);
-    TextView eventTime = findViewById(R.id.eventTime);
-    TextView eventDescription= findViewById(R.id.eventDescription);
-    Button doneButton = findViewById(R.id.doneButton);
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,21 +22,18 @@ public class ShowEvent extends AppCompatActivity {
 
         checkParentActivity();
 
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
     }
 
     public void checkParentActivity(){
         Intent intent = getIntent();
         int value = intent.getIntExtra("value", 0);
         if (value == 1){
+            Button doneButton = findViewById(R.id.doneButton);
             doneButton.setVisibility(View.GONE);
             getIntents();
         }
+
     }
 
     private void getIntents(){
@@ -55,11 +46,21 @@ public class ShowEvent extends AppCompatActivity {
         setEvent(imageUrl,title,time,description);
     }
 
-    private void setEvent(String imageUrl, String title, String time, String description ){
-
+     void setEvent(String imageUrl, String title, String time, String description ){
+        ImageView eventImage = findViewById(R.id.eventImage);
         Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
+
+        TextView eventTitle = findViewById(R.id.eventTitle);
         eventTitle.setText(title);
+
+        TextView eventTime = findViewById(R.id.eventTime);
         eventTime.setText(time);
+
+        TextView eventDescription= findViewById(R.id.eventDescription);
         eventDescription.setText(description);
+
+
+
+
     }
 }
