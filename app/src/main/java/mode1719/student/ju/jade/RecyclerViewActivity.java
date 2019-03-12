@@ -1,40 +1,63 @@
 package mode1719.student.ju.jade;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class RecyclerViewActivity extends AppCompatActivity {
+
+    private Date _date = new Date();
 
     private static final String TAG = "RecyclerViewActivity";
     private ArrayList<Event> mEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event_list);
         Log.d(TAG, "onCreate: ");
-
         initEventList();
+        getMainIntent();
+
     }
 
-    private void initRecyclerView(){
+    private void getMainIntent(){
+        //get Data
+        Intent mainIntent = getIntent();
+        _date.setTime(mainIntent.getLongExtra("date", -1));
+    }
+
+
+    public void addEventButtonClicked(){
+        Intent addIntent = new Intent(RecyclerViewActivity.this, ShowEvent.class);
+        //addIntent.putExtra("value", -1);
+        startActivity(addIntent);
+    }
+
+    private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: ");
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter( mEvents, this);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mEvents, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
-    private void initEventList(){
+    private void initEventList() {
 
         mEvents.add(new Event("Havasu Falls", "https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg"));
         mEvents.add(new Event("Trondheim", "https://i.redd.it/tpsnoz5bzo501.jpg"));
@@ -47,7 +70,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         initRecyclerView();
     }
 
-    private void addToDatabase(){
+    private void addToDatabase() {
         DatabaseReference myRef = FirebaseDatabase.getInstance("https://jade-8a2a9.firebaseio.com/").getReference();
         myRef.child("Events").setValue(mEvents);
     }

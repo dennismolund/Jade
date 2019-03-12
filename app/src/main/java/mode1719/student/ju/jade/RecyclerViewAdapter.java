@@ -1,6 +1,8 @@
 package mode1719.student.ju.jade;
 
 import android.content.Context;
+import android.content.Intent;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -35,7 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
 
         Glide.with(mContext)
@@ -45,14 +46,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         viewHolder.imageName.setText(mEvent.get(i).getTitle());
 
-
-
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(mContext, ShowEvent.class);
+                intent.putExtra("value",1);
+                intent.putExtra("image_url", mEvent.get(i).getImageUrl());
+                intent.putExtra("title", mEvent.get(i).getTitle());
+                intent.putExtra("time", mEvent.get(i).getTime());
+                intent.putExtra("description", mEvent.get(i).getDescription());
+                mContext.startActivity(intent);
 
-
-                Toast.makeText(mContext, mEvent.get(i).getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -77,4 +81,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
     }
+
 }

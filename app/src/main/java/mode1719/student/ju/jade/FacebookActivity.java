@@ -38,6 +38,7 @@ public class FacebookActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                System.out.println("FbActivity / onSuccess");
                 fetchData();
                 makeToast("Signing in");
                 goToMain();
@@ -73,23 +74,27 @@ public class FacebookActivity extends AppCompatActivity {
 
     // Go to main activity
     private void goToMain(){
+        System.out.println("FbActivity / goToMain");
         Intent intent = new Intent(FacebookActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("FbActivity / onActivityResult");
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     // Fetch facebook data
     private void fetchData(){
+        System.out.println("FbActivity / fetchData");
         Profile profile = Profile.getCurrentProfile();
         mUser.setuID(profile.getId());
         mUser.setuName(profile.getName());
         storeData();
     }
     private void storeData(){
+        System.out.println("FbActivity / storeData");
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
     }
 
