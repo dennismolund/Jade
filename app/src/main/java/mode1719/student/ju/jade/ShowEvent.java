@@ -46,7 +46,7 @@ public class ShowEvent extends AppCompatActivity {
         setEvent(imageUrl,title,time,description);
     }
 
-     void setEvent(String imageUrl, String title, String time, String description ){
+     private void setEvent(String imageUrl, String title, String time, String description ){
         ImageView eventImage = findViewById(R.id.eventImage);
         Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
 
