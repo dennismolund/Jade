@@ -33,12 +33,13 @@ public class RecyclerViewActivity extends AppCompatActivity {
         getMainIntent();
         initEventList();
 
-        Button addButton = findViewById(R.id.addEventButton);
+        final Button addButton = findViewById(R.id.addEventButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent addIntent = new Intent(RecyclerViewActivity.this, ShowEvent.class);
                 addIntent.putExtra("value", 0);
+                addIntent.putExtra("date", _date.getTime());
                 startActivity(addIntent);
             }});
 

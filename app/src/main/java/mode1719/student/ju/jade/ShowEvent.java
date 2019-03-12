@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide;
 
 import org.w3c.dom.Text;
 
+import java.util.Date;
+
 public class ShowEvent extends AppCompatActivity {
 
 
@@ -54,9 +56,14 @@ public class ShowEvent extends AppCompatActivity {
         }
 
         else {
+            final Date date = new Date();
+            Intent mainIntent = getIntent();
+            date.setTime(mainIntent.getLongExtra("date", -1));
+
             doneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    System.out.println(date);
                     //add to database
                     finish();
                 }
