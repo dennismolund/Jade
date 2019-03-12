@@ -33,6 +33,15 @@ public class RecyclerViewActivity extends AppCompatActivity {
         getMainIntent();
         initEventList();
 
+        Button addButton = findViewById(R.id.addEventButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addIntent = new Intent(RecyclerViewActivity.this, ShowEvent.class);
+                addIntent.putExtra("value", 0);
+                startActivity(addIntent);
+            }});
+
 
     }
 
@@ -43,11 +52,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
     }
 
 
-    public void addEventButtonClicked(){
-        Intent addIntent = new Intent(RecyclerViewActivity.this, ShowEvent.class);
-        //addIntent.putExtra("value", -1);
-        startActivity(addIntent);
-    }
+
 
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: ");
