@@ -13,7 +13,8 @@
         android:layout_height="0dp"
         android:layout_weight="50"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"
+        />
     <EditText
         android:id="@+id/eventTitle"
         android:layout_width="wrap_content"
@@ -51,6 +52,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Done"
+        />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete"
         />
 
 

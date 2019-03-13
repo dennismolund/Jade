@@ -49,7 +49,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(mContext, ShowEvent.class);
+                intent.putExtra("position", i);
                 intent.putExtra("value",1);
                 intent.putExtra("image_url", mEvent.get(i).getImageUrl());
                 intent.putExtra("title", mEvent.get(i).getTitle());
