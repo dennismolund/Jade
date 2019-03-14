@@ -6,10 +6,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.Profile;
 
 import org.w3c.dom.Text;
 
@@ -33,9 +35,9 @@ public class ShowEvent extends AppCompatActivity {
         Button doneButton = findViewById(R.id.doneButton);
         Button deleteButton = findViewById(R.id.deleteButton);
         final ImageView eventImage = findViewById(R.id.eventImage);
-        final TextView eventTitle = findViewById(R.id.eventTitle);
-        final TextView eventTime = findViewById(R.id.eventTime);
-        final TextView eventDescription= findViewById(R.id.eventDescription);
+        final EditText eventTitle = findViewById(R.id.eventTitle);
+        final EditText eventTime = findViewById(R.id.eventTime);
+        final EditText eventDescription= findViewById(R.id.eventDescription);
 
 
         Intent intent = getIntent();
@@ -76,7 +78,7 @@ public class ShowEvent extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //add image when creating event.
-                    System.out.println("hej");
+                    System.out.println("eventImage.onClickListener");
                 }
             });
 
@@ -86,11 +88,14 @@ public class ShowEvent extends AppCompatActivity {
                     System.out.println(date);
                     Event event = new Event(
                             date,
-                            eventTitle.toString(),
-                            eventDescription.toString(),
-                            eventTime.toString(),
+                            eventTitle.getText().toString(),
+                            eventDescription.getText().toString(),
+                            eventTime.getText().toString(),
                             eventImage.toString(),
-                            "creatror");
+                            Profile.getCurrentProfile().getName(),
+                            Profile.getCurrentProfile().getId());
+                            System.out.println(event.getOwnerID());
+                            event.addToDatabase();
                     finish();
                 }
             });

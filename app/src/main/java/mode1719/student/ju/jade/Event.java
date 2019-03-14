@@ -12,6 +12,7 @@ public class Event {
     private String time;
     private String imageUrl;
     private String creator;
+    private String ownerID;
 
     public Event(){}
 
@@ -20,13 +21,20 @@ public class Event {
         this.imageUrl = imageUrl;
     }
 
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator){
+    public Event(String title, String imageUrl, Date date){
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.date = date;
+    }
+
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID){
         this.date = date;
         this.title = title;
         this.description = description;
         this.time = time;
         this.imageUrl = imageUrl;
         this.creator = creator;
+        this.ownerID = ownerID;
     }
 
     public Date getDate() { return date; }
@@ -53,12 +61,13 @@ public class Event {
 
     public void setCreator(String creator) { this.creator = creator; }
 
-    public void addToDatabase(Event event){
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.push().setValue(event);
-    }
+    public String getOwnerID(){ return  ownerID; }
 
-    @Override
-    public String toString(){ return "Title: " + title + "\n" + "Time: " + time + "\n" + "Description: " + description;}
+    public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
+
+    public void addToDatabase(){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("Events").push().setValue(this);
+    }
 
 }
