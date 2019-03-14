@@ -91,7 +91,7 @@ public class ShowEvent extends AppCompatActivity {
                             eventTitle.getText().toString(),
                             eventDescription.getText().toString(),
                             eventTime.getText().toString(),
-                            eventImage.toString(),
+                            "IMAGEURL",
                             Profile.getCurrentProfile().getName(),
                             Profile.getCurrentProfile().getId());
                             System.out.println(event.getOwnerID());

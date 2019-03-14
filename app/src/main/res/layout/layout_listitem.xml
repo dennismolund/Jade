@@ -13,19 +13,19 @@
         />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/eventTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
         android:textColor="#000"
         android:layout_toRightOf="@id/image"
-        android:layout_alignTop="@id/imageName"
+        android:layout_alignTop="@id/eventTime"
         android:layout_marginLeft="30dp"
         android:textSize="17sp"
         />
 
     <TextView
-        android:id="@+id/imageName"
+        android:id="@+id/eventTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
