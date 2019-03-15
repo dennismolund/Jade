@@ -21,12 +21,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-
+    public ArrayList<Date> dateForEvents = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ArrayList<Date> dateList = retrieveFromDatabase();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         Date currentDay = new Date();
         Calendar nextYear = Calendar.getInstance();
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         CalendarPickerView datePicker = findViewById(R.id.calendarView);
         datePicker.init(currentDay, nextYear.getTime()).withSelectedDate(currentDay);
 
+        retrieveFromDatabase(datePicker);
 
         datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
@@ -50,35 +51,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-        System.out.println(dateList.size() + "DEBUG3");
-        datePicker.highlightDates(dateList);
+        System.out.println(dateForEvents.size() + "DebugA");
     }
 
 
-    private ArrayList<Date> retrieveFromDatabase(){
+    private void retrieveFromDatabase(final CalendarPickerView datePicker){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        //Array that consist of dates that have an Event.
-        final ArrayList<Date> dateForEvents = new ArrayList<>();
-        //Highlight dates that have events.
-
         myRef.child("Events").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
                     dateForEvents.add(new Date(eventSnap.getKey()));
+                    System.out.println(dateForEvents.size() + "dateForEvents.Size");
                 }
+                datePicker.highlightDates(dateForEvents);
+                System.out.println(dateForEvents.size() + "DebugB");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast toast = Toast.makeText(MainActivity.this, "Ops something went wrong:" + databaseError.toString(), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(MainActivity.this,
+                        "Ops something went wrong:" + databaseError.toString(), Toast.LENGTH_LONG);
                 toast.show();
             }
         });
-        System.out.println(dateForEvents.size() + "DebugB");
-        return dateForEvents;
     }
 }

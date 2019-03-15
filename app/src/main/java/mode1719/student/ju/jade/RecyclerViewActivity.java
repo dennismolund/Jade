@@ -84,7 +84,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 }
                 initRecyclerView();
                 mEvents = new ArrayList<Event>();
-
             }
 
             @Override
