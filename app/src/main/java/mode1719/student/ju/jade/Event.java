@@ -89,9 +89,9 @@ public class Event implements Parcelable {
 
     public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
 
-    public void addToDatabase(Date date){
+    public void addToDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("Events").child(date.toString()).push().setValue(this);
+        myRef.child("Events").child(this.getDate().toString()).push().setValue(this);
     }
 
     @Override
