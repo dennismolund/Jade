@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
                     dateForEvents.add(new Date(eventSnap.getKey()));
-                    System.out.println(dateForEvents.size() + "dateForEvents.Size");
                 }
                 datePicker.highlightDates(dateForEvents);
             }

@@ -26,7 +26,7 @@ public class FacebookActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facebook);
-
+        System.out.println("Test");
         // Check if user is logged in already
         checkLoginStatus();
 
@@ -39,7 +39,6 @@ public class FacebookActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 System.out.println("FbActivity / onSuccess");
-                fetchData();
                 makeToast("Signing in");
                 goToMain();
             }
@@ -67,7 +66,6 @@ public class FacebookActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn){
-            fetchData();
             goToMain();
         }
     }
@@ -84,15 +82,4 @@ public class FacebookActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    // Fetch facebook data
-    private void fetchData(){
-        System.out.println("FbActivity / fetchData");
-        Profile profile = Profile.getCurrentProfile();
-        mUser.setuID(profile.getId());
-        mUser.setuName(profile.getName());
-    }
-
-
-
 }
