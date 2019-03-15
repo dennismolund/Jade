@@ -77,7 +77,9 @@ public class RecyclerViewActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
                     if(eventSnap.getValue(Event.class).getDate().getTime() == _date.getTime()) {
-                        mEvents.add(eventSnap.getValue(Event.class));
+                        Event tempEvent = eventSnap.getValue(Event.class);
+                        tempEvent.setKey(eventSnap.getKey());
+                        mEvents.add(tempEvent);
                     }
                 }
                 initRecyclerView();

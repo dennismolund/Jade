@@ -53,6 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Intent intent = new Intent(mContext, ShowEvent.class);
                 intent.putExtra("value",1);
                 intent.putExtra("listItem", mEvent.get(i));
+                intent.putExtra("date", mEvent.get(i).getDate().getTime());
                 mContext.startActivity(intent);
 
             }

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.security.Key;
 import java.util.Date;
 
 public class Event implements Parcelable {
@@ -16,6 +17,7 @@ public class Event implements Parcelable {
     private String imageUrl;
     private String creator;
     private String ownerID;
+    private String key;
 
     public Event(){}
 
@@ -40,6 +42,17 @@ public class Event implements Parcelable {
         this.ownerID = ownerID;
     }
 
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key){
+        this.date = date;
+        this.title = title;
+        this.description = description;
+        this.time = time;
+        this.imageUrl = imageUrl;
+        this.creator = creator;
+        this.ownerID = ownerID;
+        this.key = key;
+    }
+
     protected Event(Parcel in) {
         title = in.readString();
         description = in.readString();
@@ -47,6 +60,7 @@ public class Event implements Parcelable {
         imageUrl = in.readString();
         creator = in.readString();
         ownerID = in.readString();
+        key = in.readString();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -89,6 +103,10 @@ public class Event implements Parcelable {
 
     public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
 
+    public String getKey(){ return key; }
+
+    public void setKey(String key){ this.key = key; }
+
     public void addToDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(this.getDate().toString()).push().setValue(this);
@@ -107,5 +125,6 @@ public class Event implements Parcelable {
         dest.writeString(imageUrl);
         dest.writeString(creator);
         dest.writeString(ownerID);
+        dest.writeString(key);
     }
 }

@@ -48,6 +48,8 @@ public class ShowEvent extends AppCompatActivity {
 
         Intent intent = getIntent();
         final Event clickedEvent = intent.getParcelableExtra("listItem");
+        final Date clickedDate = new Date();
+        clickedDate.setTime(intent.getLongExtra("date", -1));
 
         int value = intent.getIntExtra("value", 0);
         if (value == 1){
@@ -74,7 +76,9 @@ public class ShowEvent extends AppCompatActivity {
                                     android.R.string.yes,
                                     new DialogInterface.OnClickListener(){
                                         public void onClick(DialogInterface dialog, int whichButton){
-                                            //Delete it
+                                            FirebaseDatabase.getInstance().getReference().child("Events").child(clickedDate.
+                                                    toString()).child(clickedEvent.getKey()).removeValue();
+
                                             finish();
 
                                         }
