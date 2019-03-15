@@ -31,10 +31,7 @@ public class ShowEvent extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event);
-
         checkActivity();
-
-
     }
 
     public void checkActivity(){
@@ -44,7 +41,6 @@ public class ShowEvent extends AppCompatActivity {
         final EditText eventTitle = findViewById(R.id.eventTitle);
         final EditText eventTime = findViewById(R.id.eventTime);
         final EditText eventDescription= findViewById(R.id.eventDescription);
-
 
         Intent intent = getIntent();
         final Event clickedEvent = intent.getParcelableExtra("listItem");
@@ -78,11 +74,8 @@ public class ShowEvent extends AppCompatActivity {
                                         public void onClick(DialogInterface dialog, int whichButton){
                                             FirebaseDatabase.getInstance().getReference().child("Events").child(clickedDate.
                                                     toString()).child(clickedEvent.getKey()).removeValue();
-
                                             finish();
-
                                         }
-
                                     }
                             ).setNegativeButton(
                             android.R.string.no,
@@ -128,6 +121,5 @@ public class ShowEvent extends AppCompatActivity {
                 }
             });
         }
-
     }
 }

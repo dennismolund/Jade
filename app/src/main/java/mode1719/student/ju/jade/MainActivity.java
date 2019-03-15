@@ -45,15 +45,12 @@ public class MainActivity extends AppCompatActivity {
                 //date = Fri Feb 08 00:00:00 GMT+01:00 2019
                 startActivity(intent);
             }
-
-
             public void onDateUnselected(Date date) {
 
             }
         });
-        System.out.println(dateForEvents.size() + "DebugA");
-    }
 
+    }
 
     private void retrieveFromDatabase(final CalendarPickerView datePicker){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
@@ -65,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(dateForEvents.size() + "dateForEvents.Size");
                 }
                 datePicker.highlightDates(dateForEvents);
-                System.out.println(dateForEvents.size() + "DebugB");
             }
 
             @Override
