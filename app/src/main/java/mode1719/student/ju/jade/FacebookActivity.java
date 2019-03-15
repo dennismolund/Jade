@@ -91,12 +91,8 @@ public class FacebookActivity extends AppCompatActivity {
         Profile profile = Profile.getCurrentProfile();
         mUser.setuID(profile.getId());
         mUser.setuName(profile.getName());
-        storeData();
     }
-    private void storeData(){
-        System.out.println("FbActivity / storeData");
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-    }
+
 
 
 }

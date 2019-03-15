@@ -36,7 +36,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_event_list);
         Log.d(TAG, "onCreate: ");
         getMainIntent();
-        //initEventList();
         retrieveFromDatabase();
 
         final Button addButton = findViewById(R.id.addEventButton);
@@ -69,30 +68,11 @@ public class RecyclerViewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
-    // To be deleted
-    private void initEventList() {
 
-        mEvents.add(new Event("Havasu Falls", "https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg", d1));
-        mEvents.add(new Event("Trondheim", "https://i.redd.it/tpsnoz5bzo501.jpg", d2));
-        mEvents.add(new Event("Portugal", "https://i.redd.it/qn7f9oqu7o501.jpg", d3));
-        mEvents.add(new Event("Rocky Mountain National Park", "https://i.redd.it/j6myfqglup501.jpg", d1));
-        mEvents.add(new Event("Mahahual", "https://i.redd.it/0h2gm1ix6p501.jpg", d2));
-        mEvents.add(new Event("Frozen Lake", "https://i.redd.it/k98uzl68eh501.jpg", d3));
-        mEvents.add(new Event("White Sands Dessert", "https://i.redd.it/glin0nwndo501.jpg", _date));
-        addToDatabase();
-        initRecyclerView();
-    }
-
-
-
-    private void addToDatabase() {
-        DatabaseReference myRef = FirebaseDatabase.getInstance("https://jade-8a2a9.firebaseio.com/").getReference();
-        myRef.child("Events").setValue(mEvents);
-    }
 
     private void retrieveFromDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("Events").addValueEventListener(new ValueEventListener() {
+        myRef.child("Events").child(_date.toString()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
@@ -101,6 +81,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
                     }
                 }
                 initRecyclerView();
+                mEvents = new ArrayList<Event>();
+
             }
 
             @Override
@@ -111,10 +93,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
         });
     }
 
-    //Testdates, to be deleted
-    Date d1 = new Date();
-    Date d2 = new Date(119, 02, 15, 0, 0, 0);
-    Date d3 = new Date(119, 02, 16);
 
 
 }

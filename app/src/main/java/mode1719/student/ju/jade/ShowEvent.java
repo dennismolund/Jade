@@ -19,8 +19,6 @@ import java.util.Date;
 
 public class ShowEvent extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +65,6 @@ public class ShowEvent extends AppCompatActivity {
             });
 
         }
-
         else {
             deleteButton.setVisibility(View.GONE);
             final Date date = new Date();
@@ -95,7 +92,7 @@ public class ShowEvent extends AppCompatActivity {
                             Profile.getCurrentProfile().getName(),
                             Profile.getCurrentProfile().getId());
                             System.out.println(event.getOwnerID());
-                            event.addToDatabase();
+                            event.addToDatabase(date);
                     finish();
                 }
             });

@@ -23,7 +23,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#000"
-        android:text="title"/>
+        android:hint="title"/>
 
     <EditText
         android:id="@+id/eventTime"
@@ -33,7 +33,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#000"
-        android:text="time"/>
+        android:hint="time"/>
 
     <EditText
         android:id="@+id/eventDescription"
@@ -43,7 +43,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#000"
-        android:text="Description"/>
+        android:hint="Description"/>
 
 
 

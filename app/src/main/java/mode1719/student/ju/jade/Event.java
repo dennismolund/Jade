@@ -65,9 +65,9 @@ public class Event {
 
     public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
 
-    public void addToDatabase(){
+    public void addToDatabase(Date date){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("Events").push().setValue(this);
+        myRef.child("Events").child(date.toString()).push().setValue(this);
     }
 
 }

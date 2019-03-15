@@ -14,6 +14,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.sql.SQLOutput;
+import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         datePicker.highlightDates(dateList);
     }
 
+
     private ArrayList<Date> retrieveFromDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         //Array that consist of dates that have an Event.
@@ -63,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
-                    System.out.println(dateForEvents.size() + "DebugA");
-                    dateForEvents.add(eventSnap.getValue(Event.class).getDate());
+                    dateForEvents.add(new Date(eventSnap.getKey()));
                 }
             }
 
@@ -76,10 +78,5 @@ public class MainActivity extends AppCompatActivity {
         });
         System.out.println(dateForEvents.size() + "DebugB");
         return dateForEvents;
-
-
     }
-
-
-
 }
