@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         System.out.println(dateList.size() + "DEBUG3");
         datePicker.highlightDates(dateList);
     }

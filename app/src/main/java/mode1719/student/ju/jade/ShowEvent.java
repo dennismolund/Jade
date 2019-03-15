@@ -1,8 +1,10 @@
 package mode1719.student.ju.jade;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -15,11 +17,12 @@ import com.facebook.Profile;
 
 import org.w3c.dom.Text;
 
+import java.sql.SQLOutput;
 import java.util.Date;
 
 public class ShowEvent extends AppCompatActivity {
 
-
+    Event mEvent = new Event();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,12 +49,16 @@ public class ShowEvent extends AppCompatActivity {
             doneButton.setVisibility(View.GONE);
             //Only show delete if creator visit?
 
-            String imageUrl = getIntent().getStringExtra("image_url");
-            String title = getIntent().getStringExtra("title");
-            String time = getIntent().getStringExtra("time");
-            String description = getIntent().getStringExtra("description");
-            int position = getIntent().getIntExtra("position", -1);
-            System.out.println(position);
+            final Event clickedEvent = intent.getParcelableExtra("listItem");
+            String imageUrl = clickedEvent.getImageUrl();
+            String title = clickedEvent.getTitle();
+            String time = clickedEvent.getTime();
+            String description = clickedEvent.getDescription();
+
+
+
+
+
 
             Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
             eventTitle.setText(title);
@@ -61,8 +68,25 @@ public class ShowEvent extends AppCompatActivity {
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    new AlertDialog.Builder(ShowEvent.this)
+                            .setTitle("Delete Event")
+                            .setMessage("Do you really want to delete it?")
+                            .setPositiveButton(
+                                    android.R.string.yes,
+                                    new DialogInterface.OnClickListener(){
+                                        public void onClick(DialogInterface dialog, int whichButton){
+                                            //TODO: delete activity.
+                                        }
 
-                    //delete Event.
+                                    }
+                            ).setNegativeButton(
+                            android.R.string.no,
+                            new DialogInterface.OnClickListener(){
+                                public void onClick(DialogInterface dialog, int whichButton){
+                                    finish();
+                                }
+                            }
+                    ).show();
                 }
             });
 
@@ -77,7 +101,9 @@ public class ShowEvent extends AppCompatActivity {
             eventImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //add image when creating event.
+                    Intent intent = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, 0);
                     System.out.println("eventImage.onClickListener");
                 }
             });
@@ -100,6 +126,8 @@ public class ShowEvent extends AppCompatActivity {
                 }
             });
         }
+
+
 
     }
 }

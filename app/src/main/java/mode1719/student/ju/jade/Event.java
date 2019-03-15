@@ -1,11 +1,14 @@
 package mode1719.student.ju.jade;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
 
-public class Event {
+public class Event implements Parcelable {
     private Date date;
     private String title;
     private String description;
@@ -36,6 +39,27 @@ public class Event {
         this.creator = creator;
         this.ownerID = ownerID;
     }
+
+    protected Event(Parcel in) {
+        title = in.readString();
+        description = in.readString();
+        time = in.readString();
+        imageUrl = in.readString();
+        creator = in.readString();
+        ownerID = in.readString();
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public Date getDate() { return date; }
 
@@ -70,4 +94,18 @@ public class Event {
         myRef.child("Events").push().setValue(this);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(time);
+        dest.writeString(imageUrl);
+        dest.writeString(creator);
+        dest.writeString(ownerID);
+    }
 }
