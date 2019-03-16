@@ -19,8 +19,6 @@ import java.util.Arrays;
 
 public class FacebookActivity extends AppCompatActivity {
 
-    private User mUser = new User();
-
     public CallbackManager callbackManager = CallbackManager.Factory.create();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
