@@ -31,8 +31,88 @@ public class ShowEvent extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event);
-        checkActivity();
+        if(getIntentVal() == 1){
+            showEvent();
+        }
     }
+
+    public void showEvent(){
+        Button deleteButton = findViewById(R.id.deleteButton);
+        final ImageView eventImage = findViewById(R.id.eventImage);
+        final EditText eventTitle = findViewById(R.id.eventTitle);
+        eventTitle.setFocusable(false);
+        eventTitle.setClickable(false);
+        final EditText eventTime = findViewById(R.id.eventTime);
+        eventTime.setFocusable(false);
+        eventTime.setClickable(false);
+        final EditText eventDescription= findViewById(R.id.eventDescription);
+        eventDescription.setFocusable(false);
+        eventDescription.setClickable(false);
+
+        Event clickedEvent = getEventInent();
+
+        String imageUrl = clickedEvent.getImageUrl();
+        String title = clickedEvent.getTitle();
+        String time = clickedEvent.getTime();
+        String description = clickedEvent.getDescription();
+
+        Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
+        eventTitle.setText(title);
+        eventTime.setText(time);
+        eventDescription.setText(description);
+        if(Profile.getCurrentProfile().getId().equals(clickedEvent.getOwnerID())){
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteEvent();
+            }
+        });
+
+    }
+
+    public void deleteEvent(){
+        final Event clickedEvent = getEventInent();
+        final Date clickedDate = getDateIntent();
+        new AlertDialog.Builder(ShowEvent.this)
+                .setTitle("Delete Event")
+                .setMessage("Do you really want to delete it?")
+                .setPositiveButton(
+                        android.R.string.yes,
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int whichButton){
+                                FirebaseDatabase.getInstance().getReference().child("Events").child(clickedDate.
+                                        toString()).child(clickedEvent.getKey()).removeValue();
+                                finish();
+                            }
+                        }
+                ).setNegativeButton(
+                android.R.string.no,
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        finish();
+                    }
+                }
+        ).show();
+    }
+
+    public int getIntentVal(){
+        Intent intent = getIntent();
+        return intent.getIntExtra("value", -1);
+    }
+
+    public Event getEventInent(){
+        Intent intent = getIntent();
+        return intent.getParcelableExtra("listItem");
+    }
+    public Date getDateIntent(){
+        Date date = new Date();
+        Intent intent = getIntent();
+        date.setTime(intent.getLongExtra("date", -1));
+        return date;
+    }
+
 
     public void checkActivity(){
         Button doneButton = findViewById(R.id.doneButton);
