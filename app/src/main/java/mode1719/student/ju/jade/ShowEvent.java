@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.Profile;
@@ -53,20 +54,31 @@ public class ShowEvent extends AppCompatActivity {
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(date);
-                Event event = new Event(
-                        date,
-                        eventTitle.getText().toString(),
-                        eventDescription.getText().toString(),
-                        eventTime.getText().toString(),
-                        "IMAGEURL",
-                        Profile.getCurrentProfile().getName(),
-                        Profile.getCurrentProfile().getId());
-                System.out.println(event.getOwnerID());
-                event.addToDatabase();
-                finish();
+                if(isValidEvent()){
+                    Event event = new Event(
+                            date,
+                            eventTitle.getText().toString(),
+                            eventDescription.getText().toString(),
+                            eventTime.getText().toString(),
+                            "IMAGEURL",
+                            Profile.getCurrentProfile().getName(),
+                            Profile.getCurrentProfile().getId());
+                        event.addToDatabase();
+                        finish();
+                }
+                else{
+                    Toast toast = Toast.makeText(ShowEvent.this, "You need to enter a title", Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
+    }
+
+    public boolean isValidEvent(){
+        if(eventTitle.getText().toString().length() > 0){
+            return true;
+        }
+        return false;
     }
 
     public void initLayoutObjects(){

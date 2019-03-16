@@ -35,7 +35,8 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#FFFFFF"
-        android:hint="time"/>
+        android:hint="time"
+        />
 
     <EditText
         android:id="@+id/eventDescription"
