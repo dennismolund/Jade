@@ -7,6 +7,10 @@
     tools:context=".MainActivity">
 
     <com.squareup.timessquare.CalendarPickerView
+        android:backgroundTint="@color/colorPrimary"
+        app:tsquare_titleTextColor="#FFFFFF"
+        app:tsquare_headerTextColor="#FFFFFF"
+        app:tsquare_dividerColor="@color/colorPrimary"
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

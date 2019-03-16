@@ -2,15 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp"
-    android:id="@+id/parent_layout">
+    android:layout_margin="4dp"
+    android:id="@+id/parent_layout"
+    android:background="#FFFFFF"
+    >
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/image"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:id="@+id/image"
-        android:src="@mipmap/ic_launcher"
-        />
+        android:padding="2dp"
+        android:src="@android:drawable/ic_input_add" />
 
     <TextView
         android:id="@+id/eventTitle"
@@ -18,25 +20,22 @@
         android:layout_height="wrap_content"
         android:text="Title"
         android:textColor="#000"
-        android:layout_toRightOf="@id/image"
-        android:layout_alignTop="@id/eventTime"
-        android:layout_marginLeft="30dp"
-        android:textSize="17sp"
+        android:textStyle="bold"
+        android:layout_toEndOf="@id/image"
+        android:layout_marginLeft="20dp"
+        android:paddingTop="8dp"
+        android:textSize="20sp"
         />
 
     <TextView
         android:id="@+id/eventTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
+        android:text="00:00"
         android:textColor="#000"
-        android:layout_toRightOf="@id/image"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
-        android:textSize="17sp"
-
+        android:layout_below="@+id/eventTitle"
+        android:layout_toEndOf="@id/image"
+        android:layout_marginLeft="28dp"
+        android:textSize="15sp"
         />
-
-
-
 </RelativeLayout>

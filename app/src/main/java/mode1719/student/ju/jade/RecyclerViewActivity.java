@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +39,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         getMainIntent();
         retrieveFromDatabase();
 
-        final Button addButton = findViewById(R.id.addEventButton);
+        final FloatingActionButton addButton = findViewById(R.id.floatingActionButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,8 +48,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 addIntent.putExtra("date", _date.getTime());
                 startActivity(addIntent);
             }});
-
-
     }
 
     private void getMainIntent(){
@@ -56,9 +55,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
         Intent mainIntent = getIntent();
         _date.setTime(mainIntent.getLongExtra("date", -1));
     }
-
-
-
 
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: ");
@@ -68,8 +64,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
-
-
     private void retrieveFromDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(_date.toString()).addValueEventListener(new ValueEventListener() {

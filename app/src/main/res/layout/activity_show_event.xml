@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="100">
+    android:weightSum="100"
+    android:background="@color/cardview_dark_background">
+
 
     <ImageView
         android:id="@+id/eventImage"
@@ -22,7 +24,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:textSize="20sp"
-        android:textColor="#000"
+        android:textColor="#FFFFFF"
         android:hint="title"/>
 
     <EditText
@@ -32,7 +34,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:textSize="20sp"
-        android:textColor="#000"
+        android:textColor="#FFFFFF"
         android:hint="time"/>
 
     <EditText
@@ -42,8 +44,9 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:textSize="20sp"
-        android:textColor="#000"
-        android:hint="Description"/>
+        android:textColor="#FFFFFF"
+        android:hint="Description"
+        />
 
 
 
@@ -60,6 +63,5 @@
         android:layout_height="wrap_content"
         android:text="Delete"
         />
-
 
 </LinearLayout>
