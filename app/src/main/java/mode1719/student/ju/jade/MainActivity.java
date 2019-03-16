@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         Date currentDay = new Date();
         Calendar nextYear = Calendar.getInstance();
         nextYear.add(Calendar.YEAR, 3);
@@ -42,12 +41,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDateSelected(Date date) {
                 Intent intent = new Intent(MainActivity.this, RecyclerViewActivity.class);
                 intent.putExtra("date", date.getTime());
-                //date = Fri Feb 08 00:00:00 GMT+01:00 2019
                 startActivity(intent);
             }
-            public void onDateUnselected(Date date) {
-
-            }
+            public void onDateUnselected(Date date) { }
         });
 
     }
@@ -55,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private void retrieveFromDatabase(final CalendarPickerView datePicker){
         final Date yesterday = iterateDateFromToday(-1);
         final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+
         myRef.child("Events").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

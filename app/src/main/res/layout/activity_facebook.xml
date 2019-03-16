@@ -12,11 +12,13 @@
         android:layout_marginBottom="30dp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/forward_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/forward"
+        android:text="@string/go_to_calendar"
         android:layout_alignParentEnd="true"
+        android:visibility="gone"
+
         />
 
 </RelativeLayout>
