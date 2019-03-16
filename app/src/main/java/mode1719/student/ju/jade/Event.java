@@ -111,6 +111,10 @@ public class Event implements Parcelable {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(this.getDate().toString()).push().setValue(this);
     }
+    public void removeFromDatabase(){
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.child("Events").child(this.getDate().toString()).removeValue();
+    }
 
     @Override
     public int describeContents() {

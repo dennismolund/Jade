@@ -53,11 +53,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void retrieveFromDatabase(final CalendarPickerView datePicker){
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
+        final Date yesterday = iterateDateFromToday(-1);
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
+                    if(eventSnap.getKey() == yesterday.toString()){
+                        myRef.child("Events").child(yesterday.toString()).removeValue();
+                    }
                     dateForEvents.add(new Date(eventSnap.getKey()));
                 }
                 datePicker.highlightDates(dateForEvents);
@@ -70,5 +74,12 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
         });
+    }
+    public Date iterateDateFromToday(int i){
+        Date date = new Date();
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, i);
+        date = c.getTime();
+        return date;
     }
 }
