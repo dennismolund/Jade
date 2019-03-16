@@ -27,25 +27,63 @@ import java.util.Date;
 
 public class ShowEvent extends AppCompatActivity {
 
+    public EditText eventDescription;
+    public EditText eventTime;
+    public ImageView eventImage;
+    public EditText eventTitle;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event);
+        initLayoutObjects();
+
         if(getIntentVal() == 1){
             showEvent();
         }
+        else if(getIntentVal() == 0){
+            createNewEvent();
+        }
+    }
+
+    public void createNewEvent(){
+        Button doneBtn = findViewById(R.id.doneButton);
+        doneBtn.setVisibility(View.VISIBLE);
+        final Date date = getDateIntent();
+        doneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(date);
+                Event event = new Event(
+                        date,
+                        eventTitle.getText().toString(),
+                        eventDescription.getText().toString(),
+                        eventTime.getText().toString(),
+                        "IMAGEURL",
+                        Profile.getCurrentProfile().getName(),
+                        Profile.getCurrentProfile().getId());
+                System.out.println(event.getOwnerID());
+                event.addToDatabase();
+                finish();
+            }
+        });
+    }
+
+    public void initLayoutObjects(){
+        eventDescription= findViewById(R.id.eventDescription);
+        eventTime = findViewById(R.id.eventTime);
+        eventImage = findViewById(R.id.eventImage);
+        eventTitle = findViewById(R.id.eventTitle);
     }
 
     public void showEvent(){
         Button deleteButton = findViewById(R.id.deleteButton);
-        final ImageView eventImage = findViewById(R.id.eventImage);
-        final EditText eventTitle = findViewById(R.id.eventTitle);
         eventTitle.setFocusable(false);
         eventTitle.setClickable(false);
-        final EditText eventTime = findViewById(R.id.eventTime);
+
         eventTime.setFocusable(false);
         eventTime.setClickable(false);
-        final EditText eventDescription= findViewById(R.id.eventDescription);
+
         eventDescription.setFocusable(false);
         eventDescription.setClickable(false);
 
@@ -111,95 +149,5 @@ public class ShowEvent extends AppCompatActivity {
         Intent intent = getIntent();
         date.setTime(intent.getLongExtra("date", -1));
         return date;
-    }
-
-
-    public void checkActivity(){
-        Button doneButton = findViewById(R.id.doneButton);
-        Button deleteButton = findViewById(R.id.deleteButton);
-        final ImageView eventImage = findViewById(R.id.eventImage);
-        final EditText eventTitle = findViewById(R.id.eventTitle);
-        final EditText eventTime = findViewById(R.id.eventTime);
-        final EditText eventDescription= findViewById(R.id.eventDescription);
-
-        Intent intent = getIntent();
-        final Event clickedEvent = intent.getParcelableExtra("listItem");
-        final Date clickedDate = new Date();
-        clickedDate.setTime(intent.getLongExtra("date", -1));
-
-        int value = intent.getIntExtra("value", 0);
-        if (value == 1){
-            doneButton.setVisibility(View.GONE);
-            //Only show delete if creator visit?
-
-            String imageUrl = clickedEvent.getImageUrl();
-            String title = clickedEvent.getTitle();
-            String time = clickedEvent.getTime();
-            String description = clickedEvent.getDescription();
-
-            Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
-            eventTitle.setText(title);
-            eventTime.setText(time);
-            eventDescription.setText(description);
-
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new AlertDialog.Builder(ShowEvent.this)
-                            .setTitle("Delete Event")
-                            .setMessage("Do you really want to delete it?")
-                            .setPositiveButton(
-                                    android.R.string.yes,
-                                    new DialogInterface.OnClickListener(){
-                                        public void onClick(DialogInterface dialog, int whichButton){
-                                            FirebaseDatabase.getInstance().getReference().child("Events").child(clickedDate.
-                                                    toString()).child(clickedEvent.getKey()).removeValue();
-                                            finish();
-                                        }
-                                    }
-                            ).setNegativeButton(
-                            android.R.string.no,
-                            new DialogInterface.OnClickListener(){
-                                public void onClick(DialogInterface dialog, int whichButton){
-                                    finish();
-                                }
-                            }
-                    ).show();
-                }
-            });
-
-        }
-        else {
-            deleteButton.setVisibility(View.GONE);
-            final Date date = new Date();
-            Intent mainIntent = getIntent();
-            date.setTime(mainIntent.getLongExtra("date", -1));
-
-            eventImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //add image when creating event.
-                    System.out.println("eventImage.onClickListener");
-                }
-            });
-
-            doneButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println(date);
-                    Event event = new Event(
-                            date,
-                            eventTitle.getText().toString(),
-                            eventDescription.getText().toString(),
-                            eventTime.getText().toString(),
-                            "IMAGEURL",
-                            Profile.getCurrentProfile().getName(),
-                            Profile.getCurrentProfile().getId());
-                            System.out.println(event.getOwnerID());
-                            event.addToDatabase();
-                    finish();
-                }
-            });
-        }
     }
 }
