@@ -21,20 +21,15 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
+
     public ArrayList<Date> dateForEvents = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Date currentDay = new Date();
-        Calendar nextYear = Calendar.getInstance();
-        nextYear.add(Calendar.YEAR, 3);
-        //Display Calendar
-        CalendarPickerView datePicker = findViewById(R.id.calendarView);
-        datePicker.init(currentDay, nextYear.getTime()).withSelectedDate(currentDay);
-
-        retrieveFromDatabase(datePicker);
+        CalendarPickerView datePicker = getDatePicker();
+        highlightDatesForEvents(datePicker);
 
         datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
@@ -45,25 +40,30 @@ public class MainActivity extends AppCompatActivity {
             }
             public void onDateUnselected(Date date) { }
         });
-
     }
 
-    private void retrieveFromDatabase(final CalendarPickerView datePicker){
-        final Date yesterday = iterateDateFromToday(-1);
+    @Override
+    protected void onResume() {
+        dateForEvents.clear();
+        CalendarPickerView datePicker = getDatePicker();
+        datePicker.clearHighlightedDates();
+        System.out.println("onResume");
+        highlightDatesForEvents(datePicker);
+
+        super.onResume();
+    }
+
+    private void highlightDatesForEvents (final CalendarPickerView datePicker){
         final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
         myRef.child("Events").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
-                    if(eventSnap.getKey() == yesterday.toString()){
-                        myRef.child("Events").child(yesterday.toString()).removeValue();
-                    }
-                    dateForEvents.add(new Date(eventSnap.getKey()));
+                    getDateForEvents(eventSnap, myRef);
                 }
                 datePicker.highlightDates(dateForEvents);
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast toast = Toast.makeText(MainActivity.this,
@@ -72,11 +72,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public Date iterateDateFromToday(int i){
+
+    private CalendarPickerView getDatePicker(){
+        Date currentDay = new Date();
+        Calendar nextYear = Calendar.getInstance();
+        nextYear.add(Calendar.YEAR, 3);
+        //Display Calendar
+        CalendarPickerView datePicker = findViewById(R.id.calendarView);
+        datePicker.init(currentDay, nextYear.getTime()).withSelectedDate(currentDay);
+        return datePicker;
+    }
+
+    private ArrayList<Date> getDateForEvents(DataSnapshot eventSnap, DatabaseReference myRef){
+        final Date yesterday = iterateDateFromToday(-1);
+        Date tempDate = new Date(eventSnap.getKey());
+
+        if(tempDate.before(yesterday)){
+            System.out.println("Removing child " + tempDate.toString());
+            myRef.child("Events").child(eventSnap.getKey()).removeValue();
+        }
+        else {
+            dateForEvents.add(new Date(eventSnap.getKey()));
+            System.out.println(dateForEvents.size());
+        }
+        return dateForEvents;
+    }
+
+    private Date iterateDateFromToday(int i){
         Date date = new Date();
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, i);
         date = c.getTime();
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
         return date;
     }
 }
