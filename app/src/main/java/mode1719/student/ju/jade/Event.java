@@ -2,10 +2,12 @@ package mode1719.student.ju.jade;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
 import java.security.Key;
 import java.util.Date;
 
@@ -108,6 +110,7 @@ public class Event implements Parcelable {
     public void setKey(String key){ this.key = key; }
 
     public void addToDatabase(){
+        System.out.println("Event / addToDatabase - " + this.imageUrl);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(this.getDate().toString()).push().setValue(this);
     }
