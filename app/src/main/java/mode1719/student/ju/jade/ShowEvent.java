@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +19,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.Profile;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
@@ -38,11 +43,15 @@ public class ShowEvent extends AppCompatActivity {
     public ImageView eventImage;
     public EditText eventTitle;
 
+    StorageReference storageReference;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event);
         initLayoutObjects();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         if(getIntentVal() == 1){
             showEvent();
@@ -68,23 +77,34 @@ public class ShowEvent extends AppCompatActivity {
 
 
     private void uploadEvent(final Event event) {
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        final String imageID = UUID.randomUUID().toString();
-        if(filePath != null)
-        {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-            final StorageReference ref = storageReference.child("images/"+imageID);
-            ref.putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        if (filePath != null){
+            final String imageId = UUID.randomUUID().toString();
+            final StorageReference ref = storageReference.child(imageId);
+            ref.putFile(filePath)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    System.out.println(uri);
+                                    System.out.println(uri.toString());
+                                    eventImageUrl = uri.toString();
+                                    event.setImageUrl(eventImageUrl);
+                                    event.addToDatabase();
+                                }
+                            });
+
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    eventImageUrl = ref.child(imageID).getPath();
-                    System.out.println(eventImageUrl + " \nName: " + ref.getName() + "\nTasksnapshot: " +taskSnapshot.getMetadata().getReference().getDownloadUrl() + "\nChild.." + ref.child(imageID).getDownloadUrl());
-                    event.setImageUrl("gs://jade-8a2a9.appspot.com"+eventImageUrl);
-                    event.addToDatabase();
+                public void onFailure(@NonNull Exception e) {
+                    System.out.println("FAILED");
                 }
             });
+
         }
     }
 
@@ -140,6 +160,7 @@ public class ShowEvent extends AppCompatActivity {
         eventTime = findViewById(R.id.eventTime);
         eventImage = findViewById(R.id.eventImage);
         eventTitle = findViewById(R.id.eventTitle);
+
     }
 
     public void showEvent(){
