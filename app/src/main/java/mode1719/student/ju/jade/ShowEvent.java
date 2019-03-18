@@ -30,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -135,7 +136,9 @@ public class ShowEvent extends AppCompatActivity {
                             eventTime.getText().toString(),
                             eventImageUrl,
                             Profile.getCurrentProfile().getName(),
-                            Profile.getCurrentProfile().getId());
+                            Profile.getCurrentProfile().getId(),
+                            new ArrayList<>());
+                        event.addAttendees(Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId());
                         uploadEvent(event);
                     System.out.println("Debug5");
                         finish();
@@ -165,6 +168,9 @@ public class ShowEvent extends AppCompatActivity {
 
     public void showEvent(){
         Button deleteButton = findViewById(R.id.deleteButton);
+        Button attendBtn = findViewById(R.id.attendButton);
+        Button unattendBtn = findViewById(R.id.unattendButton);
+
         eventTitle.setFocusable(false);
         eventTitle.setClickable(false);
 
@@ -174,7 +180,7 @@ public class ShowEvent extends AppCompatActivity {
         eventDescription.setFocusable(false);
         eventDescription.setClickable(false);
 
-        Event clickedEvent = getEventInent();
+        final Event clickedEvent = getEventInent();
 
         String imageUrl = clickedEvent.getImageUrl();
         String title = clickedEvent.getTitle();
@@ -190,13 +196,45 @@ public class ShowEvent extends AppCompatActivity {
         if(Profile.getCurrentProfile().getId().equals(clickedEvent.getOwnerID())){
             deleteButton.setVisibility(View.VISIBLE);
         }
+        else if (isAttending(clickedEvent)){
+            unattendBtn.setVisibility(View.VISIBLE);
+        }
+        else{
+            attendBtn.setVisibility(View.VISIBLE);
+        }
+
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteEvent();
             }
         });
+        unattendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeAttendee(clickedEvent);
+            }
+        });
+        attendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickedEvent.addAttendees(Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId());
+            }
+        });
+    }
 
+    public void removeAttendee(Event event){
+        event.getAttendees().remove(Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId());
+    }
+
+    public boolean isAttending(Event event){
+        for (int i = 0; i < event.getAttendees().size(); i++){
+            if ((Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId()).equals(event.getAttendees().get(i))){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void deleteEvent(){

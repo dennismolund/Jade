@@ -36,7 +36,7 @@ public class Event implements Parcelable {
         this.date = date;
     }
 
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID){
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, ArrayList attendees){
         this.date = date;
         this.title = title;
         this.description = description;
@@ -44,6 +44,7 @@ public class Event implements Parcelable {
         this.imageUrl = imageUrl;
         this.creator = creator;
         this.ownerID = ownerID;
+        this.attendees = attendees;
     }
 
     public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key, ArrayList<String> attendees){
@@ -115,6 +116,8 @@ public class Event implements Parcelable {
     public ArrayList<String> getAttendees() { return attendees; }
 
     public void setAttendees(ArrayList<String> attendees) { this.attendees = attendees; }
+
+    public void addAttendees(String attendees) { this.attendees.add(attendees); }
 
     public void addToDatabase(){
         System.out.println("Event / addToDatabase - " + this.imageUrl);
