@@ -92,6 +92,7 @@ public class ShowEvent extends AppCompatActivity {
                                     System.out.println(uri.toString());
                                     eventImageUrl = uri.toString();
                                     event.setImageUrl(eventImageUrl);
+                                    event.setImageID(imageId);
                                     event.addToDatabase();
                                 }
                             });
@@ -211,6 +212,9 @@ public class ShowEvent extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int whichButton){
                                 FirebaseDatabase.getInstance().getReference().child("Events").child(clickedDate.
                                         toString()).child(clickedEvent.getKey()).removeValue();
+                                if (clickedEvent.getImageID() != null){
+                                    FirebaseStorage.getInstance().getReference().child(clickedEvent.getImageID()).delete();
+                                }
                                 finish();
                             }
                         }

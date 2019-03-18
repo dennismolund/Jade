@@ -20,6 +20,7 @@ public class Event implements Parcelable {
     private String creator;
     private String ownerID;
     private String key;
+    private String imageID;
 
     public Event(){}
 
@@ -63,6 +64,7 @@ public class Event implements Parcelable {
         creator = in.readString();
         ownerID = in.readString();
         key = in.readString();
+        imageID = in.readString();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -76,6 +78,14 @@ public class Event implements Parcelable {
             return new Event[size];
         }
     };
+
+    public String getImageID(){
+        return imageID;
+    }
+
+    public void setImageID(String imageID){
+        this.imageID = imageID;
+    }
 
     public Date getDate() { return date; }
 
@@ -133,5 +143,6 @@ public class Event implements Parcelable {
         dest.writeString(creator);
         dest.writeString(ownerID);
         dest.writeString(key);
+        dest.writeString(imageID);
     }
 }
