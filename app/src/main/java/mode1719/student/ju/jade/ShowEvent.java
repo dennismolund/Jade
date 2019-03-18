@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,7 +36,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class ShowEvent extends AppCompatActivity {
-
+    private String attendee = Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId();
     private static final int PICK_IMAGE = 1;
     public Uri filePath;
     public String eventImageUrl;
@@ -219,13 +220,19 @@ public class ShowEvent extends AppCompatActivity {
         attendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickedEvent.addAttendees(Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId());
+                addAttendee(clickedEvent);
             }
         });
     }
+    public void addAttendee(Event event){
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+        mRef.child("Events").child(event.getDate().toString()).child(event.getKey()).child("attendees").push().setValue(attendee);
+    }
 
     public void removeAttendee(Event event){
-        event.getAttendees().remove(Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId());
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+        mRef.child("Events").child(event.getDate().toString()).child(event.getKey()).child("attendees").child(attendee).removeValue();
+        event.getAttendees().remove(attendee);
     }
 
     public boolean isAttending(Event event){
