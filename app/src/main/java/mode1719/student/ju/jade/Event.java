@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Event implements Parcelable {
@@ -20,6 +21,7 @@ public class Event implements Parcelable {
     private String creator;
     private String ownerID;
     private String key;
+    private ArrayList<String> attendees;
 
     public Event(){}
 
@@ -44,7 +46,7 @@ public class Event implements Parcelable {
         this.ownerID = ownerID;
     }
 
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key){
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key, ArrayList<String> attendees){
         this.date = date;
         this.title = title;
         this.description = description;
@@ -53,6 +55,7 @@ public class Event implements Parcelable {
         this.creator = creator;
         this.ownerID = ownerID;
         this.key = key;
+        this.attendees = attendees;
     }
 
     protected Event(Parcel in) {
@@ -108,6 +111,10 @@ public class Event implements Parcelable {
     public String getKey(){ return key; }
 
     public void setKey(String key){ this.key = key; }
+
+    public ArrayList<String> getAttendees() { return attendees; }
+
+    public void setAttendees(ArrayList<String> attendees) { this.attendees = attendees; }
 
     public void addToDatabase(){
         System.out.println("Event / addToDatabase - " + this.imageUrl);

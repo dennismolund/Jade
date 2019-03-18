@@ -101,7 +101,7 @@ public class ShowEvent extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    System.out.println("FAILED");
+                    System.out.println("Error: " + e);
                 }
             });
 
