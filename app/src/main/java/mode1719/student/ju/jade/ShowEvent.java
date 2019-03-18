@@ -54,7 +54,7 @@ public class ShowEvent extends AppCompatActivity {
         setContentView(R.layout.activity_show_event);
         initLayoutObjects();
         storageReference = FirebaseStorage.getInstance().getReference();
-
+        System.out.println("Intent val: " + getIntentVal());
         if(getIntentVal() == 1){
             showEvent();
         }
@@ -194,16 +194,23 @@ public class ShowEvent extends AppCompatActivity {
         eventTitle.setText(title);
         eventTime.setText(time);
         eventDescription.setText(description);
+        System.out.println("ShowEvent" + clickedEvent.getOwnerID());
         if(Profile.getCurrentProfile().getId().equals(clickedEvent.getOwnerID())){
             deleteButton.setVisibility(View.VISIBLE);
         }
-        else if (isAttending(clickedEvent)){
+        //System.out.println(clickedEvent.getAttendees().size());
+
+   /*
+        System.out.println("Else if");
+        if (isAttending(clickedEvent) && Profile.getCurrentProfile().getId().equals(clickedEvent.getOwnerID())){
+            System.out.println("isAttending = true");
             unattendBtn.setVisibility(View.VISIBLE);
         }
+
         else{
             attendBtn.setVisibility(View.VISIBLE);
         }
-
+    */
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +218,7 @@ public class ShowEvent extends AppCompatActivity {
                 deleteEvent();
             }
         });
-        unattendBtn.setOnClickListener(new View.OnClickListener() {
+    /*    unattendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 removeAttendee(clickedEvent);
@@ -222,7 +229,7 @@ public class ShowEvent extends AppCompatActivity {
             public void onClick(View v) {
                 addAttendee(clickedEvent);
             }
-        });
+        });*/
     }
     public void addAttendee(Event event){
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
@@ -236,10 +243,13 @@ public class ShowEvent extends AppCompatActivity {
     }
 
     public boolean isAttending(Event event){
+        System.out.println("IsAttending: ");
         for (int i = 0; i < event.getAttendees().size(); i++){
+            System.out.println(attendee.equals(event.getAttendees().get(i)));
+            /*
             if ((Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId()).equals(event.getAttendees().get(i))){
                 return true;
-            }
+            }*/
         }
         return false;
     }

@@ -67,6 +67,24 @@ public class Event implements Parcelable {
         creator = in.readString();
         ownerID = in.readString();
         key = in.readString();
+        attendees = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(time);
+        dest.writeString(imageUrl);
+        dest.writeString(creator);
+        dest.writeString(ownerID);
+        dest.writeString(key);
+        dest.writeStringList(attendees);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -113,7 +131,9 @@ public class Event implements Parcelable {
 
     public void setKey(String key){ this.key = key; }
 
-    public ArrayList<String> getAttendees() { return attendees; }
+    public ArrayList<String> getAttendees() {
+        System.out.println("in GetAttendees");
+        return attendees; }
 
     public void setAttendees(ArrayList<String> attendees) { this.attendees = attendees; }
 
@@ -129,19 +149,4 @@ public class Event implements Parcelable {
         myRef.child("Events").child(this.getDate().toString()).removeValue();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(description);
-        dest.writeString(time);
-        dest.writeString(imageUrl);
-        dest.writeString(creator);
-        dest.writeString(ownerID);
-        dest.writeString(key);
-    }
 }
