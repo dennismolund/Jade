@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Jade</string>
+    <string name="go_to_calendar">Visa kalender</string>
+    <string name="Done">Spara</string>
+    <string name="description">Beskrivning</string>
+    <string name="title">Titel</string>
+    <string name="delete">Ta bort</string>
+    <string name="time">Tid</string>
+    <string name="yes">Ja</string>
+    <string name="logout">Logga ut</string>
+    <string name="login">Logga in</string>
+</resources>

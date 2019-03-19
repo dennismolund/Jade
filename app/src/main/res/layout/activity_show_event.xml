@@ -25,7 +25,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#FFFFFF"
-        android:hint="title"/>
+        android:hint="@string/title"/>
 
     <EditText
         android:id="@+id/eventTime"
@@ -35,7 +35,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#FFFFFF"
-        android:hint="time"
+        android:hint="@string/time"
         />
 
     <EditText
@@ -46,7 +46,7 @@
         android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:textColor="#FFFFFF"
-        android:hint="Description"
+        android:hint="@string/description"
         />
 
 
@@ -55,7 +55,7 @@
         android:id="@+id/doneButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Done"
+        android:text="@string/Done"
         android:visibility="gone"
         />
 
@@ -63,21 +63,7 @@
         android:id="@+id/deleteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete"
-        android:visibility="gone"
-        />
-    <Button
-        android:id="@+id/attendButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Attend"
-        android:visibility="gone"
-        />
-    <Button
-        android:id="@+id/unattendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Unattend"
+        android:text="@string/delete"
         android:visibility="gone"
         />
 

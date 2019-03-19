@@ -1,7 +1,11 @@
 package mode1719.student.ju.jade;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.FaceDetector;
+import android.media.MediaSync;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +15,9 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.DatabaseReference;
@@ -28,26 +34,22 @@ public class FacebookActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("FbActivity / onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_facebook);
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         // Check if user is logged in already
         if (isLoggedIn()){
             goToMain();
         }
 
-        // Login button
-        LoginButton loginButton = findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
-
         // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                System.out.println("FbActivity / onSuccess");
+                System.out.println("FbActivity / onSuccess" + loginResult);
                 makeToast("Signing in");
                 goToMain();
             }
-
             @Override
             public void onCancel() {
                 makeToast("Log in cancelled");
@@ -59,36 +61,87 @@ public class FacebookActivity extends AppCompatActivity {
                 makeToast("Ops something went wrong, error message:  " + exception.toString());
             }
         });
+
+        setContentView(R.layout.activity_facebook);
+
+        Button loginButton = findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performLogin();
+                System.out.println("loginBtn clicked");
+            }
+        });
+    }
+
+    public void performLogin(){
+        LoginManager.getInstance().logInWithReadPermissions(FacebookActivity.this, Arrays.asList("public_profile"));
     }
 
     @Override
     protected void onResume() {
-        onLogout();
-        System.out.println("FbActivity / onResume: " + isLoggedIn());
-        Button forwardBtn = findViewById(R.id.forward_button);
-        if (isLoggedIn()) {
-            forwardBtn.setVisibility(View.VISIBLE);
-        }
-        forwardBtn.setOnClickListener(new View.OnClickListener() {
+        Button loginButton = findViewById(R.id.login_button);
+        Button logoutButton = findViewById(R.id.logout_button);
+        Button forwardButton = findViewById(R.id.forward_button);
+        setUpView();
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLoggedIn()) { goToMain(); }
-                else { makeToast("You need to sign in"); }
+                System.out.println("onResume / logOubtn");
+                LoginManager.getInstance().logOut();
+                setUpView();
             }
         });
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(FacebookActivity.this)
+                        .setTitle("Log in with Facebook?")
+                        .setMessage("This will grant Jade Application read permission to your' public facebook profile.")
+                        .setPositiveButton(
+                                android.R.string.yes,
+                                new DialogInterface.OnClickListener(){
+                                    public void onClick(DialogInterface dialog, int whichButton){
+                                        performLogin();
+                                    }
+                                }
+                        ).setNegativeButton(
+                        android.R.string.no,
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int whichButton){
+                                makeToast("Login cancelled by user.");
+                            }
+                        }
+                ).show();
+                System.out.println("onResume / logINbtn");
+            }
+        });
+        forwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("OnResum / frwrdBtn");
+                goToMain();
+            }
+        });
+
         super.onResume();
     }
-    private void onLogout(){
-        final Button forwardBtn = findViewById(R.id.forward_button);
-        LoginButton loginBtn = findViewById(R.id.login_button);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isLoggedIn()){
-                    forwardBtn.setVisibility(View.GONE);
-                }
-            }
-        });
+
+    private void setUpView(){
+        Button loginButton = findViewById(R.id.login_button);
+        Button logoutButton = findViewById(R.id.logout_button);
+        Button forwardButton = findViewById(R.id.forward_button);
+        if(isLoggedIn()) {
+            loginButton.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.VISIBLE);
+            forwardButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            loginButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.GONE);
+            forwardButton.setVisibility(View.GONE);
+        }
     }
 
     // Let user know if login is in progress
@@ -111,8 +164,8 @@ public class FacebookActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("FbActivity / onActivityResult");
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        System.out.println(AccessToken.getCurrentAccessToken());
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

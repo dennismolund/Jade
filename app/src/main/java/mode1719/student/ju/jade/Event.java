@@ -21,7 +21,6 @@ public class Event implements Parcelable {
     private String creator;
     private String ownerID;
     private String key;
-    private ArrayList<String> attendees;
 
     public Event(){}
 
@@ -36,7 +35,7 @@ public class Event implements Parcelable {
         this.date = date;
     }
 
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, ArrayList attendees){
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID){
         this.date = date;
         this.title = title;
         this.description = description;
@@ -44,10 +43,9 @@ public class Event implements Parcelable {
         this.imageUrl = imageUrl;
         this.creator = creator;
         this.ownerID = ownerID;
-        this.attendees = attendees;
     }
 
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key, ArrayList<String> attendees){
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key){
         this.date = date;
         this.title = title;
         this.description = description;
@@ -56,7 +54,6 @@ public class Event implements Parcelable {
         this.creator = creator;
         this.ownerID = ownerID;
         this.key = key;
-        this.attendees = attendees;
     }
 
     protected Event(Parcel in) {
@@ -67,7 +64,6 @@ public class Event implements Parcelable {
         creator = in.readString();
         ownerID = in.readString();
         key = in.readString();
-        attendees = in.createStringArrayList();
     }
 
     @Override
@@ -79,7 +75,6 @@ public class Event implements Parcelable {
         dest.writeString(creator);
         dest.writeString(ownerID);
         dest.writeString(key);
-        dest.writeStringList(attendees);
     }
 
     @Override
@@ -130,14 +125,6 @@ public class Event implements Parcelable {
     public String getKey(){ return key; }
 
     public void setKey(String key){ this.key = key; }
-
-    public ArrayList<String> getAttendees() {
-        System.out.println("in GetAttendees");
-        return attendees; }
-
-    public void setAttendees(ArrayList<String> attendees) { this.attendees = attendees; }
-
-    public void addAttendees(String attendees) { this.attendees.add(attendees); }
 
     public void addToDatabase(){
         System.out.println("Event / addToDatabase - " + this.imageUrl);
