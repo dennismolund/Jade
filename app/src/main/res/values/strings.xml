@@ -12,7 +12,5 @@
     <string name="time">time</string>
     <string name="yes">Yes</string>
     <string name="logout">Log out</string>
-    <string name="login">Log in</string>
-
-
+    <string name="login">Log in with Facebook</string>
 </resources>

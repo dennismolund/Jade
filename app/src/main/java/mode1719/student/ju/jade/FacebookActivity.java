@@ -32,9 +32,8 @@ public class FacebookActivity extends AppCompatActivity {
     public CallbackManager callbackManager = CallbackManager.Factory.create();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("FbActivity / onCreate");
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         // Check if user is logged in already
@@ -42,39 +41,39 @@ public class FacebookActivity extends AppCompatActivity {
             goToMain();
         }
 
-        // Callback registration
+
+        handleLoginResult();
+        setContentView(R.layout.activity_facebook);
+
+        // User was logged out when launching app
+        Button loginButton = findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performLogin();
+            }
+        });
+    }
+
+    public void handleLoginResult(){
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                System.out.println("FbActivity / onSuccess" + loginResult);
-                makeToast("Signing in");
                 goToMain();
             }
             @Override
             public void onCancel() {
                 makeToast("Log in cancelled");
             }
-
             @Override
             public void onError(FacebookException exception) {
-                System.out.println(exception.toString());
                 makeToast("Ops something went wrong, error message:  " + exception.toString());
-            }
-        });
-
-        setContentView(R.layout.activity_facebook);
-
-        Button loginButton = findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performLogin();
-                System.out.println("loginBtn clicked");
             }
         });
     }
 
     public void performLogin(){
+        makeToast("Signing in");
         LoginManager.getInstance().logInWithReadPermissions(FacebookActivity.this, Arrays.asList("public_profile"));
     }
 
@@ -89,31 +88,13 @@ public class FacebookActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("onResume / logOubtn");
-                LoginManager.getInstance().logOut();
-                setUpView();
+                onLogoutClicked();
             }
         });
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(FacebookActivity.this)
-                        .setTitle("Log in with Facebook?")
-                        .setMessage("This will grant Jade Application read permission to your' public facebook profile.")
-                        .setPositiveButton(
-                                android.R.string.yes,
-                                new DialogInterface.OnClickListener(){
-                                    public void onClick(DialogInterface dialog, int whichButton){
-                                        performLogin();
-                                    }
-                                }
-                        ).setNegativeButton(
-                        android.R.string.no,
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int whichButton){
-                                makeToast("Login cancelled by user.");
-                            }
-                        }
-                ).show();
+                onLoginClicked();
                 System.out.println("onResume / logINbtn");
             }
         });
@@ -126,6 +107,49 @@ public class FacebookActivity extends AppCompatActivity {
         });
 
         super.onResume();
+    }
+    public void onLogoutClicked(){
+        new AlertDialog.Builder(FacebookActivity.this)
+                .setTitle("Log out?")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton(
+                        android.R.string.yes,
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int whichButton){
+                                LoginManager.getInstance().logOut();
+                                setUpView();
+                            }
+                        }
+                ).setNegativeButton(
+                android.R.string.no,
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        makeToast("Logout cancelled");
+                    }
+                }
+        ).show();
+
+    }
+
+    public void onLoginClicked(){
+        new AlertDialog.Builder(FacebookActivity.this)
+                .setTitle("Log in with Facebook?")
+                .setMessage("This will grant Jade Application read permission to your' public facebook profile.")
+                .setPositiveButton(
+                        android.R.string.yes,
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int whichButton){
+                                performLogin();
+                            }
+                        }
+                ).setNegativeButton(
+                android.R.string.no,
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        makeToast("Login cancelled by user.");
+                    }
+                }
+        ).show();
     }
 
     private void setUpView(){
@@ -165,7 +189,6 @@ public class FacebookActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        System.out.println(AccessToken.getCurrentAccessToken());
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -24,17 +24,6 @@ public class Event implements Parcelable {
 
     public Event(){}
 
-    public Event(String title, String imageUrl){
-        this.title = title;
-        this.imageUrl = imageUrl;
-    }
-
-    public Event(String title, String imageUrl, Date date){
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.date = date;
-    }
-
     public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID){
         this.date = date;
         this.title = title;
@@ -43,17 +32,6 @@ public class Event implements Parcelable {
         this.imageUrl = imageUrl;
         this.creator = creator;
         this.ownerID = ownerID;
-    }
-
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key){
-        this.date = date;
-        this.title = title;
-        this.description = description;
-        this.time = time;
-        this.imageUrl = imageUrl;
-        this.creator = creator;
-        this.ownerID = ownerID;
-        this.key = key;
     }
 
     protected Event(Parcel in) {
