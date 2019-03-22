@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.Profile;
 
 import java.util.ArrayList;
 
@@ -20,10 +21,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<Event> mEvent = new ArrayList<>();
     private Context mContext;
+    private String mCity;
 
-    public RecyclerViewAdapter(ArrayList<Event> event, Context mContext) {
+    public RecyclerViewAdapter(ArrayList<Event> event, Context context, String city) {
+        this.mCity = city;
         this.mEvent = event;
-        this.mContext = mContext;
+        this.mContext = context;
     }
 
     @NonNull
@@ -37,28 +40,37 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
+        if(mCity.equals(mEvent.get(i).getCity()) ||
+                Profile.getCurrentProfile().getId().equals(mEvent.get(i).getOwnerID())) {
 
-        Glide.with(mContext)
-                .asBitmap()
-                .load(mEvent.get(i).getImageUrl())
-                .into(viewHolder.image);
-
-        viewHolder.eventTitle.setText(mEvent.get(i).getTitle());
-        viewHolder.eventTime.setText(mEvent.get(i).getTime());
-
-        viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(mContext, ShowEvent.class);
-                intent.putExtra("value",1);
-                intent.putExtra("listItem", mEvent.get(i));
-                intent.putExtra("date", mEvent.get(i).getDate().getTime());
-                mContext.startActivity(intent);
-
+            if(mEvent.get(i).getImageUrl() != null) {
+                Glide.with(mContext)
+                        .asBitmap()
+                        .load(mEvent.get(i).getImageUrl())
+                        .into(viewHolder.image);
             }
-        });
+            else{
+                Glide.with(mContext)
+                        .asBitmap()
+                        .load(R.mipmap.ic_launcher)
+                        .into(viewHolder.image);
+            }
 
+                viewHolder.eventTitle.setText(mEvent.get(i).getTitle());
+                viewHolder.eventTime.setText(mEvent.get(i).getTime());
+
+                viewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(mContext, DetailEventViewActivity.class);
+                        intent.putExtra("value", 1);
+                        intent.putExtra("listItem", mEvent.get(i));
+                        intent.putExtra("date", mEvent.get(i).getDate().getTime());
+                        mContext.startActivity(intent);
+                    }
+                });
+            }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package mode1719.student.ju.jade;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,20 +22,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-public class ShowEvent extends AppCompatActivity {
-    private String attendee = Profile.getCurrentProfile().getName()+Profile.getCurrentProfile().getId();
+public class DetailEventViewActivity extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
     public Uri filePath;
     public String eventImageUrl;
@@ -54,11 +49,10 @@ public class ShowEvent extends AppCompatActivity {
         setContentView(R.layout.activity_show_event);
         initLayoutObjects();
         storageReference = FirebaseStorage.getInstance().getReference();
-        System.out.println("Intent val: " + getIntentVal());
-        if(getIntentVal() == 1){
+        if(getValIntent() == 1){
             showEvent();
         }
-        else if(getIntentVal() == 0){
+        else if(getValIntent() == 0){
             createNewEvent();
         }
 
@@ -79,6 +73,7 @@ public class ShowEvent extends AppCompatActivity {
 
 
     private void uploadEvent(final Event event) {
+
         if (filePath != null){
             final String imageId = UUID.randomUUID().toString();
             final StorageReference ref = storageReference.child(imageId);
@@ -104,7 +99,9 @@ public class ShowEvent extends AppCompatActivity {
                     System.out.println("Error: " + e);
                 }
             });
-
+        }
+        else{
+            event.addToDatabase();
         }
     }
 
@@ -114,6 +111,7 @@ public class ShowEvent extends AppCompatActivity {
         final Date date = getDateIntent();
 
         eventImage = findViewById(R.id.eventImage);
+
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,13 +133,13 @@ public class ShowEvent extends AppCompatActivity {
                             eventTime.getText().toString(),
                             eventImageUrl,
                             Profile.getCurrentProfile().getName(),
-                            Profile.getCurrentProfile().getId());
+                            Profile.getCurrentProfile().getId(),
+                            getCityIntent());
                         uploadEvent(event);
-                    System.out.println("Debug5");
                         finish();
                 }
                 else{
-                    Toast toast = Toast.makeText(ShowEvent.this, "You need to enter a title", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(DetailEventViewActivity.this, "You need to enter a title", Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
@@ -156,17 +154,17 @@ public class ShowEvent extends AppCompatActivity {
     }
 
     public void initLayoutObjects(){
-        eventDescription= findViewById(R.id.eventDescription);
+        eventDescription = findViewById(R.id.eventDescription);
         eventTime = findViewById(R.id.eventTime);
         eventImage = findViewById(R.id.eventImage);
         eventTitle = findViewById(R.id.eventTitle);
     }
 
-    public void showEvent(){
-        Button deleteButton = findViewById(R.id.deleteButton);
+    private void showEvent(){
+
         setUpViewObjects();
 
-        final Event clickedEvent = getEventInent();
+        final Event clickedEvent = getEventIntent();
 
         String imageUrl = clickedEvent.getImageUrl();
         String title = clickedEvent.getTitle();
@@ -175,11 +173,26 @@ public class ShowEvent extends AppCompatActivity {
 
         System.out.println("Show event imageURL: " + imageUrl);
 
-        Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
-        eventTitle.setText(title);
-        eventTime.setText(time);
-        eventDescription.setText(description);
-        System.out.println("ShowEvent" + clickedEvent.getOwnerID());
+        if(imageUrl != null) {
+            Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
+            eventTitle.setText(title);
+            eventTime.setText(time);
+            eventDescription.setText(description);
+        }
+        else {
+            Glide.with(this).asBitmap().load(R.mipmap.ic_launcher).into(eventImage);
+            eventTitle.setText(title);
+            eventTime.setText(time);
+            eventDescription.setText(description);
+        }
+
+        checkForEventOwner(clickedEvent);
+
+    }
+
+    private void checkForEventOwner(Event clickedEvent){
+        Button deleteButton = findViewById(R.id.deleteButton);
+
         if(Profile.getCurrentProfile().getId().equals(clickedEvent.getOwnerID())){
             deleteButton.setVisibility(View.VISIBLE);
         }
@@ -200,11 +213,10 @@ public class ShowEvent extends AppCompatActivity {
         eventDescription.setClickable(false);
     }
 
-
-    public void deleteEvent(){
-        final Event clickedEvent = getEventInent();
+    private void deleteEvent(){
+        final Event clickedEvent = getEventIntent();
         final Date clickedDate = getDateIntent();
-        new AlertDialog.Builder(ShowEvent.this)
+        new AlertDialog.Builder(DetailEventViewActivity.this)
                 .setTitle("Delete Event")
                 .setMessage("Do you really want to delete it?")
                 .setPositiveButton(
@@ -226,16 +238,22 @@ public class ShowEvent extends AppCompatActivity {
         ).show();
     }
 
-    public int getIntentVal(){
+    private String getCityIntent(){
+        Intent intent = getIntent();
+        return intent.getStringExtra("city");
+    }
+
+    private int getValIntent(){
         Intent intent = getIntent();
         return intent.getIntExtra("value", -1);
     }
 
-    public Event getEventInent(){
+    private Event getEventIntent(){
         Intent intent = getIntent();
         return intent.getParcelableExtra("listItem");
     }
-    public Date getDateIntent(){
+
+    private Date getDateIntent(){
         Date date = new Date();
         Intent intent = getIntent();
         date.setTime(intent.getLongExtra("date", -1));

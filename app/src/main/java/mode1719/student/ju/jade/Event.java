@@ -21,10 +21,11 @@ public class Event implements Parcelable {
     private String creator;
     private String ownerID;
     private String key;
+    private String city;
 
     public Event(){}
 
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID){
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String city){
         this.date = date;
         this.title = title;
         this.description = description;
@@ -32,6 +33,7 @@ public class Event implements Parcelable {
         this.imageUrl = imageUrl;
         this.creator = creator;
         this.ownerID = ownerID;
+        this.city = city;
     }
 
     protected Event(Parcel in) {
@@ -42,6 +44,7 @@ public class Event implements Parcelable {
         creator = in.readString();
         ownerID = in.readString();
         key = in.readString();
+        city = in.readString();
     }
 
     @Override
@@ -53,6 +56,7 @@ public class Event implements Parcelable {
         dest.writeString(creator);
         dest.writeString(ownerID);
         dest.writeString(key);
+        dest.writeString(city);
     }
 
     @Override
@@ -104,14 +108,13 @@ public class Event implements Parcelable {
 
     public void setKey(String key){ this.key = key; }
 
+    public String getCity(){ return  city; }
+
+    public void setCity(String city) { this.city = city; }
+
     public void addToDatabase(){
         System.out.println("Event / addToDatabase - " + this.imageUrl);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(this.getDate().toString()).push().setValue(this);
     }
-    public void removeFromDatabase(){
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("Events").child(this.getDate().toString()).removeValue();
-    }
-
 }

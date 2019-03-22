@@ -3,6 +3,8 @@
     package="mode1719.student.ju.jade">
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -42,6 +44,7 @@
         </activity>
 
         <activity android:name=".RecyclerViewActivity"></activity>
-        <activity android:name=".ShowEvent"></activity>
-    </application>
+        <activity android:name=".DetailEventViewActivity"></activity>
+    </application
+>
 </manifest>
