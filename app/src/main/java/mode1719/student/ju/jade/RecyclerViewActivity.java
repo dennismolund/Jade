@@ -77,6 +77,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                     }
                 }
                 initRecyclerView();
+                mEvents = new ArrayList<Event>();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
