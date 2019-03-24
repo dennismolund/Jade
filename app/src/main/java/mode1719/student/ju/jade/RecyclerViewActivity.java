@@ -7,10 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.facebook.Profile;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,9 +22,9 @@ import java.util.Date;
 
 public class RecyclerViewActivity extends AppCompatActivity {
 
-    private Date _date = new Date();
-    private String city = "";
-
+    private Date date = new Date();
+    public String city;
+    public String facebookID = Profile.getCurrentProfile().getId();
     private static final String TAG = "RecyclerViewActivity";
     private ArrayList<Event> mEvents = new ArrayList<>();
 
@@ -33,7 +33,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event_list);
-        Log.d(TAG, "onCreate: ");
         getMainIntent();
         retrieveFromDatabase();
 
@@ -43,7 +42,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent addIntent = new Intent(RecyclerViewActivity.this, DetailEventViewActivity.class);
                 addIntent.putExtra("value", 0);
-                addIntent.putExtra("date", _date.getTime());
+                addIntent.putExtra("date", date.getTime());
                 addIntent.putExtra("city", city);
                 startActivity(addIntent);
             }});
@@ -52,37 +51,41 @@ public class RecyclerViewActivity extends AppCompatActivity {
     //Get data from MainActivity
     private void getMainIntent(){
         Intent mainIntent = getIntent();
-        _date.setTime(mainIntent.getLongExtra("date", -1));
+        date.setTime(mainIntent.getLongExtra("date", -1));
         city = mainIntent.getStringExtra("city");
+        System.out.println("RecyclerView/getMainIntent: " + city);
     }
 
     private void initRecyclerView() {
-        Log.d(TAG, "initRecyclerView: " + city);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mEvents, this, this.city);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mEvents, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
+
     private void retrieveFromDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("Events").child(_date.toString()).addValueEventListener(new ValueEventListener() {
+        System.out.println("RetrieveFromDatabase / city: " + city);
+        myRef.child("Events").child(date.toString()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
-                    if(eventSnap.getValue(Event.class).getDate().getTime() == _date.getTime()) {
+                    if(eventSnap.getValue(Event.class).getDate().toString().equals(date.toString())) {
+                        System.out.println("In first if: " + city);
                         Event tempEvent = eventSnap.getValue(Event.class);
                         tempEvent.setKey(eventSnap.getKey());
-                        mEvents.add(tempEvent);
+                        if(tempEvent.getCity().equals(city) /*|| facebookID.equals(tempEvent.getOwnerID())*/){
+                            mEvents.add(tempEvent);
+                            System.out.println("In second if: " + mEvents.size());
+                        }
                     }
                 }
                 initRecyclerView();
-                mEvents = new ArrayList<Event>();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast toast = Toast.makeText(RecyclerViewActivity.this, "Ops something went wrong:" + databaseError.toString(), Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(RecyclerViewActivity.this, getString(R.string.something_wrong) + databaseError.toString(), Toast.LENGTH_LONG);
                 toast.show();
             }
         });

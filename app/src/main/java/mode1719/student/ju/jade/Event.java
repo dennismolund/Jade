@@ -22,6 +22,7 @@ public class Event implements Parcelable {
     private String ownerID;
     private String key;
     private String city;
+    private String imageID;
 
     public Event(){}
 
@@ -112,8 +113,11 @@ public class Event implements Parcelable {
 
     public void setCity(String city) { this.city = city; }
 
+    public String getImageID(){ return imageID; }
+
+    public void setImageID(String imageID){ this.imageID = imageID; }
+
     public void addToDatabase(){
-        System.out.println("Event / addToDatabase - " + this.imageUrl);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(this.getDate().toString()).push().setValue(this);
     }

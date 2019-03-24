@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,7 +43,6 @@ public class DetailEventViewActivity extends AppCompatActivity {
 
     StorageReference storageReference;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +71,6 @@ public class DetailEventViewActivity extends AppCompatActivity {
         }
     }
 
-
     private void uploadEvent(final Event event) {
 
         if (filePath != null){
@@ -89,6 +88,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
                                     System.out.println(uri.toString());
                                     eventImageUrl = uri.toString();
                                     event.setImageUrl(eventImageUrl);
+                                    event.setImageID(imageId);
                                     event.addToDatabase();
                                 }
                             });
@@ -119,7 +119,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
                 gallery.setType("image/*");
                 gallery.setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(Intent.createChooser(gallery, "Select image"), PICK_IMAGE);
+                startActivityForResult(Intent.createChooser(gallery, getString(R.string.select_image)), PICK_IMAGE);
             }
         });
         doneBtn.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +139,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
                         finish();
                 }
                 else{
-                    Toast toast = Toast.makeText(DetailEventViewActivity.this, "You need to enter a title", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(DetailEventViewActivity.this, getString(R.string.invalid_title), Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
@@ -154,6 +154,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
     }
 
     public void initLayoutObjects(){
+        System.out.println("initLayoutObjects");
         eventDescription = findViewById(R.id.eventDescription);
         eventTime = findViewById(R.id.eventTime);
         eventImage = findViewById(R.id.eventImage);
@@ -225,6 +226,9 @@ public class DetailEventViewActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int whichButton){
                                 FirebaseDatabase.getInstance().getReference().child("Events").child(clickedDate.
                                         toString()).child(clickedEvent.getKey()).removeValue();
+                                if(clickedEvent.getImageID() != null){
+                                    FirebaseStorage.getInstance().getReference().child(clickedEvent.getImageID()).delete();
+                                }
                                 finish();
                             }
                         }

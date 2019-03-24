@@ -21,10 +21,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<Event> mEvent = new ArrayList<>();
     private Context mContext;
-    private String mCity;
 
-    public RecyclerViewAdapter(ArrayList<Event> event, Context context, String city) {
-        this.mCity = city;
+    public RecyclerViewAdapter(ArrayList<Event> event, Context context) {
         this.mEvent = event;
         this.mContext = context;
     }
@@ -39,9 +37,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-
-        if(mCity.equals(mEvent.get(i).getCity()) ||
-                Profile.getCurrentProfile().getId().equals(mEvent.get(i).getOwnerID())) {
 
             if(mEvent.get(i).getImageUrl() != null) {
                 Glide.with(mContext)
@@ -70,12 +65,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         mContext.startActivity(intent);
                     }
                 });
-            }
     }
+
 
     @Override
     public int getItemCount() {
-
         return mEvent.size();
     }
 

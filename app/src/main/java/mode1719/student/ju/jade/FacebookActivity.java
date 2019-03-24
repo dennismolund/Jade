@@ -63,17 +63,17 @@ public class FacebookActivity extends AppCompatActivity {
             }
             @Override
             public void onCancel() {
-                makeToast("Log in cancelled");
+                makeToast(getString(R.string.login_cancelled));
             }
             @Override
             public void onError(FacebookException exception) {
-                makeToast("Ops something went wrong, error message:  " + exception.toString());
+                makeToast(R.string.something_wrong + exception.toString());
             }
         });
     }
 
     public void performLogin(){
-        makeToast("Signing in");
+        makeToast(getString(R.string.signing_in));
         LoginManager.getInstance().logInWithReadPermissions(FacebookActivity.this, Arrays.asList("public_profile"));
     }
 
