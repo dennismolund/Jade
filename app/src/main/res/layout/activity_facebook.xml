@@ -3,13 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.facebook.login.widget.LoginButton
+    <Button
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="30dp"
+        android:background="@color/com_facebook_button_background_color"
+        android:textColor="@color/calendar_bg"
+        android:text="@string/login"
+        />
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@color/com_facebook_button_background_color"
+        android:textColor="@color/calendar_bg"
+        android:text="@string/logout"
+        />
 
     <Button
         android:id="@+id/forward_button"
@@ -18,7 +34,6 @@
         android:text="@string/go_to_calendar"
         android:layout_alignParentEnd="true"
         android:visibility="gone"
-
         />
 
 </RelativeLayout>

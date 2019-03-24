@@ -1,7 +1,11 @@
 package mode1719.student.ju.jade;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.FaceDetector;
+import android.media.MediaSync;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +15,9 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.DatabaseReference;
@@ -26,69 +32,144 @@ public class FacebookActivity extends AppCompatActivity {
     public CallbackManager callbackManager = CallbackManager.Factory.create();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("FbActivity / onCreate");
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_facebook);
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         // Check if user is logged in already
         if (isLoggedIn()){
             goToMain();
         }
 
-        // Login button
-        LoginButton loginButton = findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
 
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                System.out.println("FbActivity / onSuccess");
-                makeToast("Signing in");
-                goToMain();
-            }
+        handleLoginResult();
+        setContentView(R.layout.activity_facebook);
 
+        // User was logged out when launching app
+        Button loginButton = findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCancel() {
-                makeToast("Log in cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                System.out.println(exception.toString());
-                makeToast("Ops something went wrong, error message:  " + exception.toString());
+            public void onClick(View v) {
+                performLogin();
             }
         });
     }
 
     @Override
     protected void onResume() {
-        onLogout();
-        System.out.println("FbActivity / onResume: " + isLoggedIn());
-        Button forwardBtn = findViewById(R.id.forward_button);
-        if (isLoggedIn()) {
-            forwardBtn.setVisibility(View.VISIBLE);
-        }
-        forwardBtn.setOnClickListener(new View.OnClickListener() {
+        Button loginButton = findViewById(R.id.login_button);
+        Button logoutButton = findViewById(R.id.logout_button);
+        Button forwardButton = findViewById(R.id.forward_button);
+        setUpView();
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLoggedIn()) { goToMain(); }
-                else { makeToast("You need to sign in"); }
+                onLogoutClicked();
             }
         });
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onLoginClicked();
+            }
+        });
+        forwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMain();
+            }
+        });
+
         super.onResume();
     }
-    private void onLogout(){
-        final Button forwardBtn = findViewById(R.id.forward_button);
-        LoginButton loginBtn = findViewById(R.id.login_button);
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+
+    // Handles the facebook login result.
+    public void handleLoginResult(){
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onClick(View v) {
-                if(isLoggedIn()){
-                    forwardBtn.setVisibility(View.GONE);
-                }
+            public void onSuccess(LoginResult loginResult) {
+                System.out.println("handleLoginResult");
+                goToMain();
+            }
+            @Override
+            public void onCancel() {
+                makeToast(getString(R.string.login_cancelled));
+            }
+            @Override
+            public void onError(FacebookException exception) {
+                makeToast(R.string.something_wrong + exception.toString());
             }
         });
+    }
+
+    // Authenticates using facebook.
+    public void performLogin(){
+        makeToast(getString(R.string.signing_in));
+        LoginManager.getInstance().logInWithReadPermissions(FacebookActivity.this, Arrays.asList("public_profile"));
+    }
+
+    // Listens for user log out.
+    public void onLogoutClicked(){
+        new AlertDialog.Builder(FacebookActivity.this)
+                .setTitle("Log out?")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton(
+                        android.R.string.yes,
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int whichButton){
+                                LoginManager.getInstance().logOut();
+                                setUpView();
+                            }
+                        }
+                ).setNegativeButton(
+                android.R.string.no,
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        makeToast("Logout cancelled");
+                    }
+                }
+        ).show();
+
+    }
+
+    // Listens for user log in.
+    public void onLoginClicked(){
+        new AlertDialog.Builder(FacebookActivity.this)
+                .setTitle("Log in with Facebook?")
+                .setMessage("This will grant Jade Application read permission to your' public facebook profile.")
+                .setPositiveButton(
+                        android.R.string.yes,
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int whichButton){
+                                performLogin();
+                            }
+                        }
+                ).setNegativeButton(
+                android.R.string.no,
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton){
+                        makeToast("Login cancelled by user.");
+                    }
+                }
+        ).show();
+    }
+
+    // Sets up the buttons depending on if the user is logged in or not.
+    private void setUpView(){
+        Button loginButton = findViewById(R.id.login_button);
+        Button logoutButton = findViewById(R.id.logout_button);
+        Button forwardButton = findViewById(R.id.forward_button);
+        if(isLoggedIn()) {
+            loginButton.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.VISIBLE);
+            forwardButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            loginButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.GONE);
+            forwardButton.setVisibility(View.GONE);
+        }
     }
 
     // Let user know if login is in progress
@@ -97,6 +178,7 @@ public class FacebookActivity extends AppCompatActivity {
         toast.show();
     }
 
+    // Checks if the user is logged in.
     protected boolean isLoggedIn(){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
@@ -105,13 +187,11 @@ public class FacebookActivity extends AppCompatActivity {
 
     // Go to main activity
     private void goToMain(){
-        System.out.println("FbActivity / goToMain");
         Intent intent = new Intent(FacebookActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("FbActivity / onActivityResult");
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }

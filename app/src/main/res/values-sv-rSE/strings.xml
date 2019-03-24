@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Jade</string>
+    <string name="go_to_calendar">Visa kalender</string>
+    <string name="Done">Spara</string>
+    <string name="description">Beskrivning</string>
+    <string name="title">Titel</string>
+    <string name="delete">Ta bort</string>
+    <string name="time">Tid</string>
+    <string name="yes">Ja</string>
+    <string name="logout">Logga ut</string>
+    <string name="login">Logga in med Facebook</string>
+    <string name="something_wrong">Oj då, något gick fel: </string>
+    <string name="select_image">Välj bild</string>
+    <string name="invalid_title">Skriv in en titel</string>
+    <string name="login_cancelled">Inloggning avbruten</string>
+    <string name="signing_in">Loggar in</string>
+    <string name="enter_location_message">Jade app kan inte komma åt din plats, ange din stad</string>
+    <string name="city_name">Stad</string>
+</resources>

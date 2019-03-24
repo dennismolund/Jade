@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Event implements Parcelable {
@@ -20,22 +21,12 @@ public class Event implements Parcelable {
     private String creator;
     private String ownerID;
     private String key;
+    private String city;
     private String imageID;
 
     public Event(){}
 
-    public Event(String title, String imageUrl){
-        this.title = title;
-        this.imageUrl = imageUrl;
-    }
-
-    public Event(String title, String imageUrl, Date date){
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.date = date;
-    }
-
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID){
+    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String city){
         this.date = date;
         this.title = title;
         this.description = description;
@@ -43,17 +34,7 @@ public class Event implements Parcelable {
         this.imageUrl = imageUrl;
         this.creator = creator;
         this.ownerID = ownerID;
-    }
-
-    public Event(Date date, String title, String description, String time, String imageUrl, String creator, String ownerID, String key){
-        this.date = date;
-        this.title = title;
-        this.description = description;
-        this.time = time;
-        this.imageUrl = imageUrl;
-        this.creator = creator;
-        this.ownerID = ownerID;
-        this.key = key;
+        this.city = city;
     }
 
     protected Event(Parcel in) {
@@ -64,7 +45,24 @@ public class Event implements Parcelable {
         creator = in.readString();
         ownerID = in.readString();
         key = in.readString();
-        imageID = in.readString();
+        city = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(time);
+        dest.writeString(imageUrl);
+        dest.writeString(creator);
+        dest.writeString(ownerID);
+        dest.writeString(key);
+        dest.writeString(city);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -79,13 +77,7 @@ public class Event implements Parcelable {
         }
     };
 
-    public String getImageID(){
-        return imageID;
-    }
-
-    public void setImageID(String imageID){
-        this.imageID = imageID;
-    }
+    // Getters setters.
 
     public Date getDate() { return date; }
 
@@ -119,30 +111,17 @@ public class Event implements Parcelable {
 
     public void setKey(String key){ this.key = key; }
 
+    public String getCity(){ return  city; }
+
+    public void setCity(String city) { this.city = city; }
+
+    public String getImageID(){ return imageID; }
+
+    public void setImageID(String imageID){ this.imageID = imageID; }
+
+    // Pushes an event to the database.
     public void addToDatabase(){
-        System.out.println("Event / addToDatabase - " + this.imageUrl);
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(this.getDate().toString()).push().setValue(this);
-    }
-    public void removeFromDatabase(){
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.child("Events").child(this.getDate().toString()).removeValue();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(description);
-        dest.writeString(time);
-        dest.writeString(imageUrl);
-        dest.writeString(creator);
-        dest.writeString(ownerID);
-        dest.writeString(key);
-        dest.writeString(imageID);
     }
 }
