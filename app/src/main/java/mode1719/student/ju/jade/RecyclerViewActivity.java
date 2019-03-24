@@ -45,13 +45,14 @@ public class RecyclerViewActivity extends AppCompatActivity {
             }});
     }
 
-    //Get data from MainActivity
+    //Get date and city from MainActivity
     private void getMainIntent(){
         Intent mainIntent = getIntent();
         date.setTime(mainIntent.getLongExtra("date", -1));
         city = mainIntent.getStringExtra("city");
     }
 
+    // Inits the recyclerViewAdapter.
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(mEvents, this);
@@ -60,6 +61,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
     }
 
+    // Retrieves a list of events under the certain date from the database.
     private void retrieveFromDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(date.toString()).addValueEventListener(new ValueEventListener() {

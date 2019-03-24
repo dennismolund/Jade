@@ -77,6 +77,8 @@ public class Event implements Parcelable {
         }
     };
 
+    // Getters setters.
+
     public Date getDate() { return date; }
 
     public void setDate(Date date) { this.date = date; }
@@ -117,6 +119,7 @@ public class Event implements Parcelable {
 
     public void setImageID(String imageID){ this.imageID = imageID; }
 
+    // Pushes an event to the database.
     public void addToDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").child(this.getDate().toString()).push().setValue(this);

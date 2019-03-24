@@ -55,28 +55,6 @@ public class FacebookActivity extends AppCompatActivity {
         });
     }
 
-    public void handleLoginResult(){
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                goToMain();
-            }
-            @Override
-            public void onCancel() {
-                makeToast(getString(R.string.login_cancelled));
-            }
-            @Override
-            public void onError(FacebookException exception) {
-                makeToast(R.string.something_wrong + exception.toString());
-            }
-        });
-    }
-
-    public void performLogin(){
-        makeToast(getString(R.string.signing_in));
-        LoginManager.getInstance().logInWithReadPermissions(FacebookActivity.this, Arrays.asList("public_profile"));
-    }
-
     @Override
     protected void onResume() {
         Button loginButton = findViewById(R.id.login_button);
@@ -105,6 +83,33 @@ public class FacebookActivity extends AppCompatActivity {
 
         super.onResume();
     }
+
+    // Handles the facebook login result.
+    public void handleLoginResult(){
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                System.out.println("handleLoginResult");
+                goToMain();
+            }
+            @Override
+            public void onCancel() {
+                makeToast(getString(R.string.login_cancelled));
+            }
+            @Override
+            public void onError(FacebookException exception) {
+                makeToast(R.string.something_wrong + exception.toString());
+            }
+        });
+    }
+
+    // Authenticates using facebook.
+    public void performLogin(){
+        makeToast(getString(R.string.signing_in));
+        LoginManager.getInstance().logInWithReadPermissions(FacebookActivity.this, Arrays.asList("public_profile"));
+    }
+
+    // Listens for user log out.
     public void onLogoutClicked(){
         new AlertDialog.Builder(FacebookActivity.this)
                 .setTitle("Log out?")
@@ -128,6 +133,7 @@ public class FacebookActivity extends AppCompatActivity {
 
     }
 
+    // Listens for user log in.
     public void onLoginClicked(){
         new AlertDialog.Builder(FacebookActivity.this)
                 .setTitle("Log in with Facebook?")
@@ -149,6 +155,7 @@ public class FacebookActivity extends AppCompatActivity {
         ).show();
     }
 
+    // Sets up the buttons depending on if the user is logged in or not.
     private void setUpView(){
         Button loginButton = findViewById(R.id.login_button);
         Button logoutButton = findViewById(R.id.logout_button);
@@ -171,6 +178,7 @@ public class FacebookActivity extends AppCompatActivity {
         toast.show();
     }
 
+    // Checks if the user is logged in.
     protected boolean isLoggedIn(){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();

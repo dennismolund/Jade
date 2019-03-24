@@ -22,11 +22,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<Event> mEvent = new ArrayList<>();
     private Context mContext;
 
+    // Constructor
     public RecyclerViewAdapter(ArrayList<Event> event, Context context) {
         this.mEvent = event;
         this.mContext = context;
     }
 
+    // Returns viewHolder for the recycler view.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -35,6 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return holder;
     }
 
+    // Sets up the content of the viewHolder
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
@@ -68,6 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
+    // Returns number of objects to show.
     @Override
     public int getItemCount() {
         return mEvent.size();
@@ -79,7 +83,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView eventTime;
         RelativeLayout parentLayout;
 
-
+        // Constructor
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
