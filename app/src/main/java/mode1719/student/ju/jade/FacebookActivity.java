@@ -89,7 +89,6 @@ public class FacebookActivity extends AppCompatActivity {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                System.out.println("handleLoginResult");
                 goToMain();
             }
             @Override
@@ -112,8 +111,8 @@ public class FacebookActivity extends AppCompatActivity {
     // Listens for user log out.
     public void onLogoutClicked(){
         new AlertDialog.Builder(FacebookActivity.this)
-                .setTitle("Log out?")
-                .setMessage("Are you sure you want to sign out?")
+                .setTitle(R.string.log_out_q)
+                .setMessage(R.string.logout_message)
                 .setPositiveButton(
                         android.R.string.yes,
                         new DialogInterface.OnClickListener(){
@@ -126,7 +125,7 @@ public class FacebookActivity extends AppCompatActivity {
                 android.R.string.no,
                 new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog, int whichButton){
-                        makeToast("Logout cancelled");
+                        makeToast(getString(R.string.logout_cancelled));
                     }
                 }
         ).show();
@@ -136,8 +135,8 @@ public class FacebookActivity extends AppCompatActivity {
     // Listens for user log in.
     public void onLoginClicked(){
         new AlertDialog.Builder(FacebookActivity.this)
-                .setTitle("Log in with Facebook?")
-                .setMessage("This will grant Jade Application read permission to your' public facebook profile.")
+                .setTitle(R.string.login_q)
+                .setMessage(R.string.login_message)
                 .setPositiveButton(
                         android.R.string.yes,
                         new DialogInterface.OnClickListener(){
@@ -149,7 +148,7 @@ public class FacebookActivity extends AppCompatActivity {
                 android.R.string.no,
                 new DialogInterface.OnClickListener(){
                     public void onClick(DialogInterface dialog, int whichButton){
-                        makeToast("Login cancelled by user.");
+                        makeToast(getString(R.string.login_cancelled_by));
                     }
                 }
         ).show();

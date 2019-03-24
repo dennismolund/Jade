@@ -17,4 +17,10 @@
     <string name="signing_in">Loggar in</string>
     <string name="enter_location_message">Jade app kan inte komma åt din plats, ange din stad</string>
     <string name="city_name">Stad</string>
+    <string name="log_out_q">Logga ut?</string>
+    <string name="logout_message">Är du säker på att du vill logga ut?</string>
+    <string name="logout_cancelled">Utloggning avbruten</string>
+    <string name="login_q">Logga in med Facebook?</string>
+    <string name="login_message">Det här ger Jade app åtkomst till din publika facebook profil.</string>
+    <string name="login_cancelled_by">Inloggning abvruten av användare.</string>
 </resources>

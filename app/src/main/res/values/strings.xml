@@ -20,4 +20,10 @@
     <string name="signing_in">Signing in</string>
     <string name="enter_location_message">Jade app can\'t access location, enter the name of your city</string>
     <string name="city_name">City</string>
+    <string name="log_out_q">Log out?</string>
+    <string name="logout_message">Are you sure you want to sign out?</string>
+    <string name="logout_cancelled">Logout cancelled</string>
+    <string name="login_q">Log in with Facebook?</string>
+    <string name="login_message">This will grant Jade Application read permission to your\' public facebook profile.</string>
+    <string name="login_cancelled_by">Login cancelled by user.</string>
 </resources>
