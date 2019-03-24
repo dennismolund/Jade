@@ -16,4 +16,5 @@
     <string name="login_cancelled">Inloggning avbruten</string>
     <string name="signing_in">Loggar in</string>
     <string name="enter_location_message">Jade app kan inte komma åt din plats, ange din stad</string>
+    <string name="city_name">Stad</string>
 </resources>

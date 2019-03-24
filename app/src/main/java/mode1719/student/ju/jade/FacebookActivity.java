@@ -87,7 +87,6 @@ public class FacebookActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("onResume / logOubtn");
                 onLogoutClicked();
             }
         });
@@ -95,13 +94,11 @@ public class FacebookActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onLoginClicked();
-                System.out.println("onResume / logINbtn");
             }
         });
         forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("OnResum / frwrdBtn");
                 goToMain();
             }
         });
@@ -182,7 +179,6 @@ public class FacebookActivity extends AppCompatActivity {
 
     // Go to main activity
     private void goToMain(){
-        System.out.println("FbActivity / goToMain");
         Intent intent = new Intent(FacebookActivity.this, MainActivity.class);
         startActivity(intent);
     }

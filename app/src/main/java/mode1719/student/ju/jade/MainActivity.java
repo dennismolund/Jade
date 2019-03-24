@@ -39,8 +39,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     public ArrayList<Date> dateForEvents = new ArrayList<>();
-    public ArrayList<Date> datesToHighlight = new ArrayList<>();
-    public ArrayList<String> oldDates = new ArrayList<>();
     public String city;
     public TextView cityName;
     @Override
@@ -60,14 +58,13 @@ public class MainActivity extends AppCompatActivity {
         dateForEvents.clear();
         CalendarPickerView datePicker = getDatePicker();
         datePicker.clearHighlightedDates();
-        System.out.println("onResume");
         fetchDatesWithEvents(datePicker);
 
         super.onResume();
     }
 
+    //Checks if the user have given permission to the app to access location.
     private void checkGPSPermission(){
-        System.out.println("checkGPSPermission");
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -78,54 +75,52 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // If the app gets null from the GPS_PROVIDER user can enter wich city they are using the app in.
     private void enterCityManually(){
-        System.out.println("EntercityManually" + city);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.enter_location_message);
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        builder.setView(input);
-        builder.setPositiveButton(R.string.Done, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                city = input.getText().toString();
-                cityName.setText(city);
-            }
-        }).show();
+        if(city == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.enter_location_message);
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            builder.setView(input);
+            builder.setPositiveButton(R.string.Done, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    city = input.getText().toString();
+                    cityName.setText(city);
+                }
+            }).show();
+        }
     }
 
+    // Looks for location updates and last known location.
     private void getLocationCoordinates(){
         cityName = findViewById(R.id.cityName);
-        System.out.println("getLocationCoordinates");
         try{
-            System.out.println("getLocationCoordinates / try");
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, new LocationListener() {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
                     try{
-                        System.out.println("onLocationChanged");
                         city = getLocation(location.getLatitude(), location.getLongitude());
                         cityName.setText(city);
                     }
                     catch (NullPointerException e){
                         e.printStackTrace();
+                        enterCityManually();
                     }
                     catch (SecurityException e){
                         e.printStackTrace();
+                        enterCityManually();
                     }
                 }
 
                 @Override
                 public void onStatusChanged(String provider, int status, Bundle extras) {
-                    System.out.println("OnStatusChanged");
                 }
-
                 @Override
                 public void onProviderEnabled(String provider) {
-
                 }
-
                 @Override
                 public void onProviderDisabled(String provider) {
                     enterCityManually();
@@ -133,34 +128,29 @@ public class MainActivity extends AppCompatActivity {
             });
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             city = getLocation(location.getLatitude(), location.getLongitude());
-            System.out.println("getLocationCoordinates: " + city);
         }
         catch (SecurityException e){
-            System.out.println("Outer catch:" + e + city);
             e.printStackTrace();
-            if (city == null)
-                enterCityManually();
+            enterCityManually();
         }
         catch (NullPointerException e){
-            System.out.println("Outer catch: " + e + city);
             e.printStackTrace();
-            if (city == null)
-                enterCityManually();
+            enterCityManually();
         }
     }
 
+    // Catches result from user after asking for location permission.
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        System.out.println("onRequestPermission");
         switch (requestCode){
             case 1000:
-                System.out.println("onRequestPermission");
                 getLocationCoordinates();
         }
     }
 
+    // Returns the users location as a string.
     private String getLocation(double lat, double lon){
-        System.out.println("getLocation");
+        String location = new String();
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses;
         try{
@@ -168,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             if (addresses.size() > 0){
                 for (Address adr: addresses){
                     if(adr.getLocality() != null && adr.getLocality().length() > 0){
-                        city = adr.getLocality();
+                        location = adr.getLocality();
                         break;
                     }
                 }
@@ -177,29 +167,11 @@ public class MainActivity extends AppCompatActivity {
         catch(IOException e){
             e.printStackTrace();
         }
-        System.out.println("getLocation: " + city);
-        return city;
+        return location;
     }
 
-    private void pickDate(CalendarPickerView datePicker){
-        System.out.println("pickDate");
-        datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(Date date) {
-                if(city == null){
-                    enterCityManually();
-                }
-                Intent intent = new Intent(MainActivity.this, RecyclerViewActivity.class);
-                intent.putExtra("date", date.getTime());
-                intent.putExtra("city", city);
-                startActivity(intent);
-            }
-            public void onDateUnselected(Date date) { }
-        });
-    }
-
+    // Calls the database for the dates that has events.
     private void fetchDatesWithEvents(final CalendarPickerView datePicker){
-        System.out.println("fetchDatesWithEvents");
         final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
         myRef.child("Events").addValueEventListener(new ValueEventListener() {
             @Override
@@ -219,19 +191,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private CalendarPickerView getDatePicker(){
-        System.out.println("getDatePicker");
-        Date currentDay = new Date();
-        Calendar nextYear = Calendar.getInstance();
-        nextYear.add(Calendar.YEAR, 3);
-        //Display Calendar
-        CalendarPickerView datePicker = findViewById(R.id.calendarView);
-        datePicker.init(currentDay, nextYear.getTime()).withSelectedDate(currentDay);
-        return datePicker;
-    }
-
+    // Removes past dates and their children from the database and lists the remaining dates.
     private void setUpDatesForEvents(DataSnapshot eventSnap, DatabaseReference myRef){
-        System.out.println("setUpDatesForEvents");
         final Date yesterday = iterateDateFromToday(-1);
         Date tempDate = new Date(eventSnap.getKey());
 
@@ -241,13 +202,36 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             dateForEvents.add(new Date(eventSnap.getKey()));
-            System.out.println(dateForEvents.size());
         }
     }
 
+    // Sets up and returns the calendar picker view.
+    private CalendarPickerView getDatePicker(){
+        Date currentDay = new Date();
+        Calendar nextYear = Calendar.getInstance();
+        nextYear.add(Calendar.YEAR, 3);
+        //Display Calendar
+        CalendarPickerView datePicker = findViewById(R.id.calendarView);
+        datePicker.init(currentDay, nextYear.getTime()).withSelectedDate(currentDay);
+        return datePicker;
+    }
 
+    // Makes calendar dates clickable.
+    private void pickDate(CalendarPickerView datePicker){
+        datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(Date date) {
+                Intent intent = new Intent(MainActivity.this, RecyclerViewActivity.class);
+                intent.putExtra("date", date.getTime());
+                intent.putExtra("city", city);
+                startActivity(intent);
+            }
+            public void onDateUnselected(Date date) { }
+        });
+    }
+
+    // Returns the date i days from today.
     private Date iterateDateFromToday(int i){
-        System.out.println("iterateDateFromToday");
         Date date = new Date();
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, i);

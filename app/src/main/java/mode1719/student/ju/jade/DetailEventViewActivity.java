@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,8 +70,8 @@ public class DetailEventViewActivity extends AppCompatActivity {
         }
     }
 
+    // Connects the event and it's image and uploads them to database/firestorage.
     private void uploadEvent(final Event event) {
-
         if (filePath != null){
             final String imageId = UUID.randomUUID().toString();
             final StorageReference ref = storageReference.child(imageId);
@@ -80,12 +79,9 @@ public class DetailEventViewActivity extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-
                             ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    System.out.println(uri);
-                                    System.out.println(uri.toString());
                                     eventImageUrl = uri.toString();
                                     event.setImageUrl(eventImageUrl);
                                     event.setImageID(imageId);
@@ -96,7 +92,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    System.out.println("Error: " + e);
+                    e.printStackTrace();
                 }
             });
         }
@@ -105,6 +101,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
         }
     }
 
+    // Allows the user to create a new event.
     public void createNewEvent(){
         Button doneBtn = findViewById(R.id.doneButton);
         doneBtn.setVisibility(View.VISIBLE);
@@ -122,6 +119,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(gallery, getString(R.string.select_image)), PICK_IMAGE);
             }
         });
+
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,24 +144,23 @@ public class DetailEventViewActivity extends AppCompatActivity {
         });
     }
 
+    // Returns true if the event has a title.
     public boolean isValidEvent(){
-        if(eventTitle.getText().toString().length() > 0){
-            return true;
-        }
-        return false;
+        return (eventTitle.getText().toString().length() > 0);
     }
 
+    // Initializes the view objects.
     public void initLayoutObjects(){
-        System.out.println("initLayoutObjects");
         eventDescription = findViewById(R.id.eventDescription);
         eventTime = findViewById(R.id.eventTime);
         eventImage = findViewById(R.id.eventImage);
         eventTitle = findViewById(R.id.eventTitle);
     }
 
+    // Sets up the event view and sets a default image if no image was added by the creator.
     private void showEvent(){
 
-        setUpViewObjects();
+        prepareViewObjects();
 
         final Event clickedEvent = getEventIntent();
 
@@ -171,8 +168,6 @@ public class DetailEventViewActivity extends AppCompatActivity {
         String title = clickedEvent.getTitle();
         String time = clickedEvent.getTime();
         String description = clickedEvent.getDescription();
-
-        System.out.println("Show event imageURL: " + imageUrl);
 
         if(imageUrl != null) {
             Glide.with(this).asBitmap().load(imageUrl).into(eventImage);
@@ -191,9 +186,9 @@ public class DetailEventViewActivity extends AppCompatActivity {
 
     }
 
+    // If the creator of the owner looks at the event, there is a choice to delete it.
     private void checkForEventOwner(Event clickedEvent){
         Button deleteButton = findViewById(R.id.deleteButton);
-
         if(Profile.getCurrentProfile().getId().equals(clickedEvent.getOwnerID())){
             deleteButton.setVisibility(View.VISIBLE);
         }
@@ -205,7 +200,8 @@ public class DetailEventViewActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpViewObjects(){
+    // Prepares the layout.
+    private void prepareViewObjects(){
         eventTitle.setFocusable(false);
         eventTitle.setClickable(false);
         eventTime.setFocusable(false);
@@ -214,6 +210,7 @@ public class DetailEventViewActivity extends AppCompatActivity {
         eventDescription.setClickable(false);
     }
 
+    // Removes the event and it's image from the database / firestorage.
     private void deleteEvent(){
         final Event clickedEvent = getEventIntent();
         final Date clickedDate = getDateIntent();
@@ -242,21 +239,25 @@ public class DetailEventViewActivity extends AppCompatActivity {
         ).show();
     }
 
+    // Returns the city user is in.
     private String getCityIntent(){
         Intent intent = getIntent();
         return intent.getStringExtra("city");
     }
 
+    // Returns 0 if the user clicked create button and 1 if user picked an event to look at.
     private int getValIntent(){
         Intent intent = getIntent();
         return intent.getIntExtra("value", -1);
     }
 
+    // Returns the clicked event.
     private Event getEventIntent(){
         Intent intent = getIntent();
         return intent.getParcelableExtra("listItem");
     }
 
+    // Returns the date user clicked.
     private Date getDateIntent(){
         Date date = new Date();
         Intent intent = getIntent();

@@ -24,13 +24,10 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
     private Date date = new Date();
     public String city;
-    public String facebookID = Profile.getCurrentProfile().getId();
-    private static final String TAG = "RecyclerViewActivity";
     private ArrayList<Event> mEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_event_list);
         getMainIntent();
@@ -53,7 +50,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
         Intent mainIntent = getIntent();
         date.setTime(mainIntent.getLongExtra("date", -1));
         city = mainIntent.getStringExtra("city");
-        System.out.println("RecyclerView/getMainIntent: " + city);
     }
 
     private void initRecyclerView() {
@@ -66,18 +62,15 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
     private void retrieveFromDatabase(){
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-        System.out.println("RetrieveFromDatabase / city: " + city);
         myRef.child("Events").child(date.toString()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnap: dataSnapshot.getChildren()){
                     if(eventSnap.getValue(Event.class).getDate().toString().equals(date.toString())) {
-                        System.out.println("In first if: " + city);
                         Event tempEvent = eventSnap.getValue(Event.class);
                         tempEvent.setKey(eventSnap.getKey());
                         if(tempEvent.getCity().equals(city) /*|| facebookID.equals(tempEvent.getOwnerID())*/){
                             mEvents.add(tempEvent);
-                            System.out.println("In second if: " + mEvents.size());
                         }
                     }
                 }
