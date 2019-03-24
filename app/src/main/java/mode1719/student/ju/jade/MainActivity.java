@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Date> datesToHighlight = new ArrayList<>();
     public ArrayList<String> oldDates = new ArrayList<>();
     public String city;
+    public TextView cityName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,11 +89,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 city = input.getText().toString();
+                cityName.setText(city);
             }
         }).show();
     }
 
     private void getLocationCoordinates(){
+        cityName = findViewById(R.id.cityName);
         System.out.println("getLocationCoordinates");
         try{
             System.out.println("getLocationCoordinates / try");
@@ -102,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                     try{
                         System.out.println("onLocationChanged");
                         city = getLocation(location.getLatitude(), location.getLongitude());
+                        cityName.setText(city);
                     }
                     catch (NullPointerException e){
                         e.printStackTrace();
